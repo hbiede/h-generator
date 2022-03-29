@@ -1,0 +1,7 @@
+AllCops:
+  Exclude:
+    - '**/*_test.rb'
+    - './vendor/bundle/**/*'
+
+Style/GlobalVars:
+  Enabled: false
