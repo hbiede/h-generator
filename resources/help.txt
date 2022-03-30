@@ -1,0 +1,11 @@
+Example usage: ruby %<ProgramName>s -g alphabet.txt, -f freqs.txt
+
+Flags:
+    -g,--alphabet: Specifies the alphabet of inputs allowed.
+    -f,--frequencies: Defined the frequencies of all words to be
+        tested against. Assumed to be in sorted from most to least
+        common.
+    -n,--words-to-parse: [Optional] Number of words in the frequency
+        file to parse. Default: %<WordCount>s
+    -o,--output: [Optional] Output file to write to.
+        Default: %<OutputFile>s
