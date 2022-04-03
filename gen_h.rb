@@ -16,6 +16,25 @@ ERROR_CODES = {
 
 # Handles all script arguments
 class ArgParser
+  # Checks if the argument pair is valid
+  #
+  # @param args [Array<String>] The arguments to check
+  # @param index [Integer] The index of the argument to check
+  # @return [Boolean] true iff the argument pair is valid
+  def self.valid_arg_pair(args, index)
+    index + 1 < args.length && !args[index + 1].start_with?('-')
+  end
+
+  # Checks that a value is a string representation of an integer
+  #
+  # @param value [String] the value to check
+  # @return [Boolean] true iff the value is an integer represented as a string
+  def self.valid_integer(value)
+    value.gsub(
+      /[_,]/, ''
+    ).to_i.to_s == value.gsub(/[_,]/, '')
+  end
+
   # Prints the help message text, formatted with default values
   #
   # @return [String] the help message text
@@ -31,6 +50,7 @@ class ArgParser
   #
   # @param args [Array] The arguments passed to the script
   # @return [void]
+  # @raise [SystemExit] If the help flag is used
   def self.parse_help(args)
     matching_arg = args.find { |arg| arg.match(/--help/) }
     return if matching_arg.nil?
@@ -43,11 +63,12 @@ class ArgParser
   #
   # @param args [Array] The arguments to parse
   # @return [String] The path to the alphabet file
+  # @raise [SystemExit] If the alphabet file path was input incorrectly
   def self.parse_g_input_file(args)
     matching_g_arg = args.find { |arg| arg.match(/-g|--alphabet/) }
     g_index = args.find_index(matching_g_arg)
 
-    if matching_g_arg.nil? || g_index + 1 >= args.length || args[g_index + 1].start_with?('-')
+    if matching_g_arg.nil? || !valid_arg_pair(args, g_index)
       warn 'Error: must include alphabet file'
       warn generate_help_text
       exit ERROR_CODES[:INCOMPLETE_ARGS]
@@ -59,11 +80,12 @@ class ArgParser
   #
   # @param args [Array] The arguments to parse
   # @return [String] The path to the frequency file
+  # @raise [SystemExit] If the frequency file path is input incorrectly
   def self.parse_freq_input_file(args)
     matching_freq_arg = args.find { |arg| arg.match(/-f|--frequencies/) }
     freq_index = args.find_index(matching_freq_arg)
 
-    if matching_freq_arg.nil? || freq_index + 1 >= args.length  || args[freq_index + 1].start_with?('-')
+    if matching_freq_arg.nil? || !valid_arg_pair(args, freq_index)
       warn 'must include frequency file'
       warn generate_help_text
       exit ERROR_CODES[:INCOMPLETE_ARGS]
@@ -75,6 +97,7 @@ class ArgParser
   #
   # @param args [Array] The arguments to parse
   # @return [String] The path to the output file
+  # @raise [SystemExit] If the output file path is input incorrectly
   def self.parse_output_file(args)
     matching_arg = args.find { |arg| arg.match(/-o|--output/) }
     return $output_file if matching_arg.nil?
@@ -89,6 +112,20 @@ class ArgParser
     args[out_file_index]
   end
 
+  # Ensure word count args are valid
+  #
+  # @param args [Array] The arguments to parse
+  # @param word_count_index [Integer] The index of the word count argument
+  # @return [void]
+  # @raise [SystemExit] If word count value is invalid
+  def self.check_for_word_count_error(args, word_count_index)
+    return unless !valid_arg_pair(args, word_count_index - 1) || !valid_integer(args[word_count_index])
+
+    warn 'Invalid argument usage'
+    warn generate_help_text
+    exit ERROR_CODES[:INCOMPLETE_ARGS]
+  end
+
   # Parse for the number of words to parse from the frequency file
   #
   # @param args [Array] The arguments to parse
@@ -98,11 +135,8 @@ class ArgParser
     return $words_to_parse if matching_arg.nil?
 
     word_count_index = args.find_index(matching_arg) + 1
-    if word_count_index >= args.length || args[word_count_index].start_with?('-') || args[word_count_index].gsub(/[_,]/, '').to_i.to_s != args[word_count_index].gsub(/[_,]/, '')
-      warn 'Invalid argument usage'
-      warn generate_help_text
-      exit ERROR_CODES[:INCOMPLETE_ARGS]
-    end
+    check_for_word_count_error(args, word_count_index)
+
     args[word_count_index].gsub(/[_,]/, '')
   end
 
@@ -159,9 +193,9 @@ class FileIO
   # @return [void]
   def self.write_h_file(output_file, data)
     File.open(output_file, 'w') do |f|
+      # Sort by negative frequency to get a descending order
       data
         .entries
-        # Sort by negative frequency to get a descending order
         .sort_by { |_, value| -value }
         .each do |key, value|
           f.puts "#{key},#{value}"
@@ -195,6 +229,7 @@ class FrequencyGenerator
   # @param curr [String] The current string to check. Expected to be a suffix substring of the word to split
   # @param g_set [Array<String>] The set of strings in the alphabet
   # @return [String] The longest possible string in the alphabet that is a prefix substring of the word to split
+  # @raise [SystemExit] If the alphabet does not contain sufficient characters to map the space
   def self.find_greedy_next(word_to_split, curr, g_set)
     substrings = g_set.filter { |g| !Regexp.new("^#{g}").match(curr).nil? }
     if substrings.length.zero?
@@ -231,6 +266,7 @@ class FrequencyGenerator
   # @param [Array<String>] g_set The alphabet set
   # @param [Hash{String => Integer}] h_set The H set mapping
   # @return [void]
+  # @raise [SystemExit] If the alphabet does not contain sufficient characters to map the space
   def self.add_to_h_set(word, freq, g_set, h_set)
     parts = theta_splitter(word, g_set)
     parts[0, parts.length - 1].each_with_index do |part, i|
