@@ -1,7 +1,19 @@
 AllCops:
+  NewCops: enable
+  Exclude:
+    - './vendor/bundle/**/*'
+
+Metrics/AbcSize:
   Exclude:
     - '**/*_test.rb'
-    - './vendor/bundle/**/*'
+
+Metrics/MethodLength:
+  Exclude:
+    - '**/*_test.rb'
+
+Naming/FileName:
+  Exclude:
+    - '**/*_test.rb'
 
 Style/GlobalVars:
   Enabled: false
