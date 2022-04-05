@@ -66,14 +66,15 @@ class TestFileIO < Test::Unit::TestCase
     end
     # Must have a space character
     assert_raise(SystemExit) { FileIO.read_g_file(file) }
+    File.delete(file)
   end
 
   def test_write_h_file
     file = './temp.test_write_h_file.txt'
-    FileIO.write_h_file(file, { 'a' => 2, 'b' => 1, 'c' => 3, 'd' => 10, 'e' => 0 })
+    FileIO.write_h_file(file, { 'a_:::_b' => 2, 'b_:::_c' => 1, 'c_:::_ation' => 3, 'd_:::_og' => 10, 'e_:::_gg' => 0 })
     assert_equal(true, File.exist?(file))
 
-    assert_equal(%W[d,10\n c,3\n a,2\n b,1\n e,0\n], File.readlines(file))
+    assert_equal(%W[dog,d,og,10\n cation,c,ation,3\n ab,a,b,2\n bc,b,c,1\n egg,e,gg,0\n], File.readlines(file))
 
     File.delete(file)
   end

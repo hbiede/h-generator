@@ -19,10 +19,10 @@ class ArgParser
   # Checks if the argument pair is valid
   #
   # @param args [Array<String>] The arguments to check
-  # @param index [Integer] The index of the argument to check
+  # @param index [Integer,NilClass] The index of the argument to check
   # @return [Boolean] true iff the argument pair is valid
   def self.valid_arg_pair(args, index)
-    index + 1 < args.length && !args[index + 1].start_with?('-')
+    !index.nil? && index + 1 < args.length && !args[index + 1].start_with?('-')
   end
 
   # Checks that a value is a string representation of an integer
@@ -198,14 +198,15 @@ class FileIO
         .entries
         .sort_by { |_, value| -value }
         .each do |key, value|
-          f.puts "#{key},#{value}"
+          g1, g2 = key.split('_:::_')
+          f.puts "#{g1}#{g2},#{g1},#{g2},#{value}"
         end
     end
   end
 end
 
 # Generates the H set as a mapping of strings onto integers (initialized as 0)
-class HGenerator
+class ComboGenerator
   # Generate the H mapping such that $ g_1 \in G, g_2 \in G, (g_1 + g_2) \notin G, (g_1 + g_2) \in H $
   #
   # @param g_set [Array<String>] The set of strings in G
@@ -214,7 +215,7 @@ class HGenerator
     h_set = {}
     g_set.each do |g1|
       g_set.each do |g2|
-        h_set[g1 + g2] = 0 unless g_set.include?(g1 + g2)
+        h_set["#{g1}_:::_#{g2}"] = 0 unless g_set.include?(g1 + g2)
       end
     end
     h_set
@@ -270,7 +271,7 @@ class FrequencyGenerator
   def self.add_to_h_set(word, freq, g_set, h_set)
     parts = theta_splitter(word, g_set)
     parts[0, parts.length - 1].each_with_index do |part, i|
-      concat = part + parts[i + 1]
+      concat = "#{part}_:::_#{parts[i + 1]}"
       unless h_set.key? concat
         warn "Error: #{concat} is not a possible combination in the given alphabet"
         exit ERROR_CODES[:IMPOSSIBLE_COMBO]
@@ -303,7 +304,7 @@ def main(args)
   freq_list = FileIO.read_freq_file(freq_in, count)
   g_set = FileIO.read_g_file(g_in)
 
-  h_set = HGenerator.generate_h g_set
+  h_set = ComboGenerator.generate_h g_set
   generate_frequency_set(g_set, h_set, freq_list)
 
   FileIO.write_h_file(out, h_set)
