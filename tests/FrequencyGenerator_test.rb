@@ -38,42 +38,42 @@ class TestFrequencyGenerator < Test::Unit::TestCase
   def test_add_to_h_set
     g_set = ['the', 't', 'he', 're', 'ere', 'fo', 'f', 'for', 'e', 'o', ' ']
     initial_h_set = {
-      'there' => 0,
-      'here' => 0,
-      'refor' => 0,
-      'fore' => 0,
-      ' the' => 0,
-      ' he' => 0,
-      're ' => 0,
-      'e ' => 0
+      'the_:::_re' => 0,
+      'he_:::_re' => 0,
+      're_:::_for' => 0,
+      'for_:::_e' => 0,
+      ' _:::_the' => 0,
+      ' _:::_he' => 0,
+      're_:::_ ' => 0,
+      'e_:::_ ' => 0
     }
     new_h = initial_h_set.clone
     FrequencyGenerator.add_to_h_set('there', 10, g_set, new_h)
     assert_equal({
                    **initial_h_set,
-                   'there' => 10,
-                   ' the' => 10,
-                   're ' => 10
+                   'the_:::_re' => 10,
+                   ' _:::_the' => 10,
+                   're_:::_ ' => 10
                  }, new_h)
 
     new_h = initial_h_set.clone
     FrequencyGenerator.add_to_h_set('here', 25, g_set, new_h)
     assert_equal({
                    **initial_h_set,
-                   'here' => 25,
-                   ' he' => 25,
-                   're ' => 25
+                   'he_:::_re' => 25,
+                   ' _:::_he' => 25,
+                   're_:::_ ' => 25
                  }, new_h)
 
     new_h = initial_h_set.clone
     FrequencyGenerator.add_to_h_set('therefore', 1000, g_set, new_h)
     assert_equal({
                    **initial_h_set,
-                   'there' => 1000,
-                   ' the' => 1000,
-                   'refor' => 1000,
-                   'fore' => 1000,
-                   'e ' => 1000
+                   'the_:::_re' => 1000,
+                   ' _:::_the' => 1000,
+                   're_:::_for' => 1000,
+                   'for_:::_e' => 1000,
+                   'e_:::_ ' => 1000
                  }, new_h)
 
     assert_raise(SystemExit) { FrequencyGenerator.add_to_h_set('error', 1000, ['error'], initial_h_set.clone) }
@@ -82,22 +82,22 @@ class TestFrequencyGenerator < Test::Unit::TestCase
   def test_generate_frequency_set
     g_set = ['the', 't', 'he', 're', 'ere', 'fo', 'f', 'for', 'e', 'o', ' ']
     initial_h_set = {
-      'there' => 0,
-      'here' => 0,
-      'refor' => 0,
-      'fore' => 0,
-      ' the' => 0,
-      ' he' => 0,
-      're ' => 0,
-      'e ' => 0
+      'the_:::_re' => 0,
+      'he_:::_re' => 0,
+      're_:::_for' => 0,
+      'for_:::_e' => 0,
+      ' _:::_the' => 0,
+      ' _:::_he' => 0,
+      're_:::_ ' => 0,
+      'e_:::_ ' => 0
     }
     new_h = initial_h_set.clone
     FrequencyGenerator.generate_frequency_set(g_set, new_h, { 'there' => 30, 'here' => 50 })
     assert_equal({ **initial_h_set,
-                   ' the' => 30,
-                   ' he' => 50,
-                   'there' => 30,
-                   'here' => 50,
-                   're ' => 80 }, new_h)
+                   ' _:::_the' => 30,
+                   ' _:::_he' => 50,
+                   'the_:::_re' => 30,
+                   'he_:::_re' => 50,
+                   're_:::_ ' => 80 }, new_h)
   end
 end
