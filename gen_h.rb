@@ -86,7 +86,7 @@ class ArgParser
     freq_index = args.find_index(matching_freq_arg)
 
     if matching_freq_arg.nil? || !valid_arg_pair(args, freq_index)
-      warn 'must include frequency file'
+      warn 'Must include frequency file'
       warn generate_help_text
       exit ERROR_CODES[:INCOMPLETE_ARGS]
     end
@@ -163,11 +163,14 @@ class FileIO
   # @param words_to_parse [Integer] The number of words to parse from the file
   # @return [Hash{String => Integer}] The mapping of words to frequencies
   def self.read_freq_file(frequency_file, words_to_parse)
-    data = File.readlines(frequency_file).slice(0, words_to_parse)
+    data = File.readlines(frequency_file).slice(0, words_to_parse.to_i)
     result = {}
     data.each do |line|
-      split = line.split(/\s+/)
-      result[split[0].upcase] = split[1].to_i
+      trimmed = line.chomp
+      if trimmed.length.positive?
+        split = trimmed.split(/\s+/)
+        result[split[0].upcase] = split[1].to_i
+      end
     end
     result
   end
@@ -192,15 +195,15 @@ class FileIO
   # @param [Hash{String => Integer}] data The data to write to the output file
   # @return [void]
   def self.write_h_file(output_file, data)
-    File.open(output_file, 'w') do |f|
-      # Sort by negative frequency to get a descending order
-      data
-        .entries
-        .sort_by { |_, value| -value }
-        .each do |key, value|
-          g1, g2 = key.split('_:::_')
-          f.puts "#{g1}#{g2},#{g1},#{g2},#{value}"
-        end
+    f = File.open(output_file, 'w')
+    # Sort by negative frequency to get a descending order
+    data
+      .entries
+      .filter { |_, value| value.positive? }
+      .sort_by { |_, value| -value }
+      .each do |key, value|
+      g1, g2 = key.split('_:::_')
+      f.puts "#{g1}#{g2},#{g1},#{g2},#{value}"
     end
   end
 end
@@ -305,7 +308,7 @@ def main(args)
   g_set = FileIO.read_g_file(g_in)
 
   h_set = ComboGenerator.generate_h g_set
-  generate_frequency_set(g_set, h_set, freq_list)
+  FrequencyGenerator.generate_frequency_set(g_set, h_set, freq_list)
 
   FileIO.write_h_file(out, h_set)
 end

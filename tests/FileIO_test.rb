@@ -16,6 +16,7 @@ class TestFileIO < Test::Unit::TestCase
       f.puts "there\t230123"
       f.puts 'Here      47614'
       f.puts 'where 11234'
+      f.puts ''
     end
 
     result = FileIO.read_freq_file(file, 10)
@@ -74,7 +75,7 @@ class TestFileIO < Test::Unit::TestCase
     FileIO.write_h_file(file, { 'a_:::_b' => 2, 'b_:::_c' => 1, 'c_:::_ation' => 3, 'd_:::_og' => 10, 'e_:::_gg' => 0 })
     assert_equal(true, File.exist?(file))
 
-    assert_equal(%W[dog,d,og,10\n cation,c,ation,3\n ab,a,b,2\n bc,b,c,1\n egg,e,gg,0\n], File.readlines(file))
+    assert_equal(%W[dog,d,og,10\n cation,c,ation,3\n ab,a,b,2\n bc,b,c,1\n], File.readlines(file))
 
     File.delete(file)
   end
