@@ -187,10 +187,10 @@ def problem_def(s, n, p):
     finger_bit_vector_act_as_triplets(G_D, s, n)
     finger_used_when_single_button_on_finger_used(G_D, G, s, n)
 
-    # The cost of each H according to stride, stutter, and conflict.
+    # The raw cost of pressing each h2.
     raw_H2_cost = [ Real('rc%s' % i) for i in range(len(n.H)) ]
 
-    # The cost of each H according to stride, stutter, and conflict.
+    # The cost of each H according to stride, stutter, and conflict, multiplied by frequency.
     discounted_H_cost = [ Real('rc%s' % i) for i in range(len(n.H)) ]
     stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p)
     
