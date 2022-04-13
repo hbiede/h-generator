@@ -107,7 +107,11 @@ for index in range(4):
 
                 max_cost = max(c("i", index), c("m", middle), c("r", ring), c("p", pinky))
                 mean_cost = (c("i", index) + c("m", middle) + c("r", ring) + c("p", pinky)) / fingers
-                cost = max_cost + 0.25 * fingers * mean_cost
+                cost = 0
+                if fingers == 1:
+                    cost = max_cost
+                else:
+                    cost = max_cost + 0.25 * fingers * mean_cost
 
                 # 3) Print every chord
                 chord_int = chord_to_int(index, middle, ring, pinky)
