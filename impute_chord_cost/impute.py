@@ -81,6 +81,8 @@ def chord_to_int(index, middle, ring, pinky):
         chord_int += 1
     return chord_int
 
+s = ""
+lines = 0
 # 1) Enumerate chords
 # 0 = No button
 # 1 = Left button
@@ -102,7 +104,7 @@ for index in range(4):
                 if pinky != 0:
                     fingers += 1
                 
-                if fingers == 0:
+                if fingers == 0 or pinky == 1 or pinky == 3:
                     continue
 
                 max_cost = max(c("i", index), c("m", middle), c("r", ring), c("p", pinky))
@@ -115,4 +117,9 @@ for index in range(4):
 
                 # 3) Print every chord
                 chord_int = chord_to_int(index, middle, ring, pinky)
-                print(f"s.add( If(n.G[h2_index] == {chord_int}, raw_H2_cost[i] == {cost}))")
+                print(f"s.add( Or( Not( G[h2_index] == {chord_int}), raw_H2_cost[i] == {cost}))")
+#                 print(f"If(n.G[h2_index] == {chord_int}, {cost},")
+#                 s = s + ")"
+                lines += 1
+# print(s)
+print(lines)

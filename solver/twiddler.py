@@ -70,8 +70,7 @@ last_print_time = datetime.min
 last_sat_time = datetime.min
 solver_time = datetime.now()
 last_was_update = False
-m = None
-f = open("config.txt", "a")
+m = None # Output of latest SAT solver model
 # See comments above in "Guide the Search" for understanding how this works.
 while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res:
     solveTime = datetime.now()
@@ -93,7 +92,6 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
     #   if it turns out to be UNSAT/UNKNOWN.
     s.push() # Create new state
     s.add(b.cumulative_cost[len(n.G)-1] <= guess_cost)
-
     
     result = s.check()
     guess_time = datetime.now() - solveTime
@@ -102,18 +100,17 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
             print("") # Print newline
             last_was_update = False
         last_print_time = datetime.now()
-        print(f"{guess_cost:.9f} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
+        print(f"{guess_cost:.2f} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
     else:
         print(f".", flush=True, end="")
         last_was_update = True
 
-    sys.stdout = f
     if result == sat:
         lo_sat = guess_cost
         m = s.model()
         if datetime.now() >= last_sat_time + p.sat_time:
             last_sat_time = datetime.now()
-            print.print_details(m)
+            lib.print_details(m, b, n)
     elif result == unsat:
         hi_unsat = guess_cost
         search_has_failed = True
@@ -124,7 +121,6 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
         search_has_failed = True
         s.pop() # Restore state (i.e. Remove guess constraint)
                 # Only remove guess constraint when it can't be attained, not when sat.
-    sys.stdout = sys.__stdout__
 
 if last_was_update:
     print("") # Print newline
@@ -133,12 +129,9 @@ print(f"Sat: {lo_sat:.4f}, Unknown: {hi_unknown:.4f}, Unsat: {hi_unsat:.4f}")
 print(f"Total Time: {datetime.now() - setupTime}")
 print("---------------------------------------")
 
-sys.stdout = f
-print.print_details(m)
-sys.stdout = sys.__stdout__
-f.close()
+lib.print_details(m, b, n)
 
-print.print_details(m)
+lib.print_details(m, b, n)
 # ******************************************************
 # TODO: Convert SMT solver output to configuration file.
 # ******************************************************

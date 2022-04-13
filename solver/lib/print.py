@@ -1,3 +1,5 @@
+import sys
+
 # ******************************************************
 # Print out quick view of what configuration looks like.
 # ******************************************************
@@ -21,32 +23,33 @@ def print_config(d):
         if x not in d:
             d[x] = ""
     # print(f[0].sort())
-    print(f'\n   Left       Middle       Right')
-    print(f' ________________________________')
-    print(f'|              Space      BckSpc | <-- Mouseclick buttons')
-    print(f'|--------------------------------|')
-    print(f'| [{d[f[0]]:4}] {d[f[1]]:4} [{d[f[2]]:4}] {d[f[3]]:4} [{d[f[4]]:4}] |')
-    print(f'|                                |')
-    print(f'|  {d[f[5]]:4}  {d[f[6]]:4}  {d[f[7]]:4}  {d[f[8]]:4}  {d[f[9]]:4}  |')
-    print(f'|                                |')
-    print(f'| [{d[f[10]]:4}] {d[f[11]]:4} [{d[f[12]]:4}] {d[f[13]]:4} [{d[f[14]]:4}] |')
-    print(f'|                                |')
-    print(f'|  {d[f[15]]:4}  {d[f[16]]:4}  {d[f[17]]:4}  {d[f[18]]:4}  {d[f[19]]:4}  |')
-    print(f'|                                |')
-    print(f'| [{d[f[20]]:4}] {d[f[21]]:4} [{d[f[22]]:4}] {d[f[23]]:4} [{d[f[24]]:4}] |')
-    print(f'|                                |')
-    print(f'|  {d[f[25]]:4}  {d[f[26]]:4}  {d[f[27]]:4}  {d[f[28]]:4}  {d[f[29]]:4}  |')
-    print(f'|                                |')
-    print(f'| [{d[f[30]]:4}] {d[f[31]]:4} [{d[f[32]]:4}] {d[f[33]]:4} [{d[f[34]]:4}] |')
-    print(f'|________________________________|')
+    print(f'\n   Left       Middle       Right', file=sys.stderr)
+    print(f' ________________________________', file=sys.stderr)
+    print(f'|              Space      BckSpc | <-- Mouseclick buttons', file=sys.stderr)
+    print(f'|--------------------------------|', file=sys.stderr)
+    print(f'| [{d[f[0]]:4}] {d[f[1]]:4} [{d[f[2]]:4}] {d[f[3]]:4} [{d[f[4]]:4}] |', file=sys.stderr)
+    print(f'|                                |', file=sys.stderr)
+    print(f'|  {d[f[5]]:4}  {d[f[6]]:4}  {d[f[7]]:4}  {d[f[8]]:4}  {d[f[9]]:4}  |', file=sys.stderr)
+    print(f'|                                |', file=sys.stderr)
+    print(f'| [{d[f[10]]:4}] {d[f[11]]:4} [{d[f[12]]:4}] {d[f[13]]:4} [{d[f[14]]:4}] |', file=sys.stderr)
+    print(f'|                                |', file=sys.stderr)
+    print(f'|  {d[f[15]]:4}  {d[f[16]]:4}  {d[f[17]]:4}  {d[f[18]]:4}  {d[f[19]]:4}  |', file=sys.stderr)
+    print(f'|                                |', file=sys.stderr)
+    print(f'| [{d[f[20]]:4}] {d[f[21]]:4} [{d[f[22]]:4}] {d[f[23]]:4} [{d[f[24]]:4}] |', file=sys.stderr)
+    print(f'|                                |', file=sys.stderr)
+    print(f'|  {d[f[25]]:4}  {d[f[26]]:4}  {d[f[27]]:4}  {d[f[28]]:4}  {d[f[29]]:4}  |', file=sys.stderr)
+    print(f'|                                |', file=sys.stderr)
+    print(f'| [{d[f[30]]:4}] {d[f[31]]:4} [{d[f[32]]:4}] {d[f[33]]:4} [{d[f[34]]:4}] |', file=sys.stderr)
+    print(f'|________________________________|', file=sys.stderr)
 
-def print_details(m):
+def print_details(m, b, n):
     # We generate a dictionary where the chords are the keys and n_grams the values.
     num_2 = 0
     num_3 = 0
     num_4 = 0
     num_5 = 0
     press_lookup = {}
+    print(m) # Uncomment to debug.
     for i in range(len(n.G)):
         if m[b.G[i]] in press_lookup:
             assert m[b.G[i]] == 0
@@ -62,7 +65,7 @@ def print_details(m):
             elif len(n.G[i]) == 5:
                 num_5 += 1
             # elif len(n.G[i]) == 1:
-            print("i: " + str(i) + ", m[G[i]]: " + str(m[b.G[i]]) + ", n_gram: " + n.G[i])
-    print(f'Chorded-2_grams: {num_2}, 3_grams: {num_3}, 4_grams: {num_4}, 5_grams: {num_5}')
+            print("i: " + str(i) + ", m[G[i]]: " + str(m[b.G[i]]) + ", n_gram: " + n.G[i], file=sys.stderr)
+    print(f'Chorded-2_grams: {num_2}, 3_grams: {num_3}, 4_grams: {num_4}, 5_grams: {num_5}', file=sys.stderr)
     
     print_config(press_lookup)
