@@ -115,4 +115,4 @@ for index in range(4):
 
                 # 3) Print every chord
                 chord_int = chord_to_int(index, middle, ring, pinky)
-                print(f"If(G[i] == {chord_int}, {cost})")
+                print(f"s.add( If(G[h2_index] == {chord_int}, raw_H2_cost[i] == {cost}))")
