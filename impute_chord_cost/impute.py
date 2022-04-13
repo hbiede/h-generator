@@ -1,15 +1,34 @@
-
+# Index Left and Middle Left had identical timings of 0.530973451.
+# This is undesirable for several reasons:
+# 1) It seems unlikely in a real-world large user study that any
+#       two chords would have identical timings.
+# 2) It seems likely that identical timings will make the job of
+#       the solver harder, because it increases the probability
+#       that multiple configurations have the same cost. The
+#       solver must then spend time checking if the cost of
+#       each of these configurations, instead of learning a
+#       a constraint that would prune some of the configurations
+#       from the search space.
+# 3)    Because we are not running a user study our goal is to
+#       test the computational model, not generate an optimal
+#       configuration. Non-idential timings should produce a more
+#       realistic test.
+# Therefore:
+#   Each timing 0.530973451 was modified as follows:
+#   NEW_TIMING = 0.530973451 + Random_Number[-0.01, 0.01)
+#   New Index Left = 0.526762113
+#   New Middle Left = 0.537003738
 def c(finger, button):
     if finger == "i":
         if button == 1:
-            return 0.530973451
+            return 0.526762113
         if button == 2:
             return 0.452830189
         if button == 3:
             return 0.560747664
     if finger == "m":
         if button == 1:
-            return 0.530973451
+            return 0.537003738
         if button == 2:
             return 0.470588235
         if button == 3:
