@@ -3,14 +3,6 @@ from datetime import datetime, timedelta
 import lib
 import sys
 
-# ToDo (Ordered)
-# - Implement cons that were hand written.
-# - Ask Hundter to run H generator to get a G and H file.
-# - Examine and modify parameter file.
-# - Current file uses concept of characters per second (CPS). Is this appropreiate? Regardless the CPS constants in parameters.py will either need to be disgarded entirely or changed.
-# - Modify search section at bottom of twiddler.py
-# - Modify Parameters.setup(), Parameters.initial_step_up(), Parameters.after_failure_step_up()
-
 # Twiddler BitVector Index
 #   L   M   R
 #   11  10  9 - Index
@@ -51,87 +43,12 @@ b = lib.problem_def(s, n, p)
 # s.add(Extract(7, 7, b.G[n.index['E']]) == 0)
 
 
-# If cost of chords is given in seconds then cumulative_cost[len(n.G)-1] is
-#   the seconds to enter all of the training corpos.
-# We can use this to calculate average characters per second:
-# 1 / (cumulative_cost[len(n.G)-1] / total_count) this simplifies to:
-# total_count / cumulative_cost[len(n.G)-1]
-total_character_count = 0
-for i in range(len(n.H)):
-    total_character_count += n.HF[i] * len(n.H2[i])
-print(f"Total character count: {total_character_count}")
-chars_per_second = Real("cps")
-s.add(chars_per_second == total_character_count / b.cumulative_cost[len(n.G)-1])
-
-
 # ******************************************************
-# Print out quick view of what configuration looks like.
+# ******************************************************
+# |   Problem: Minimize b.cumulative_cost[len(n.G)-1]  |
+# ******************************************************
 # ******************************************************
 
-def print_config(d):
-    # The default buttons and double row buttons
-    f = [
-        2048, 3072, 1024, 1536, 512,
-        2304, 3456, 1152, 1728, 576,
-        256, 384, 128, 192, 64,
-        288, 432, 144, 216, 72,
-        32, 48, 16, 24, 8,
-        36, 54, 18, 27, 9,
-        4, 6, 2, 3, 1,
-    ]
-
-    # Mask f here when adding combo display feature.
-
-    # If a chord doesn't have an n_gram fill it with the empty string.
-    for x in f:
-        if x not in d:
-            d[x] = ""
-    # print(f[0].sort())
-    print(f'\n   Left       Middle       Right')
-    print(f' ________________________________')
-    print(f'|              Space      BckSpc | <-- Mouseclick buttons')
-    print(f'|--------------------------------|')
-    print(f'| [{d[f[0]]:4}] {d[f[1]]:4} [{d[f[2]]:4}] {d[f[3]]:4} [{d[f[4]]:4}] |')
-    print(f'|                                |')
-    print(f'|  {d[f[5]]:4}  {d[f[6]]:4}  {d[f[7]]:4}  {d[f[8]]:4}  {d[f[9]]:4}  |')
-    print(f'|                                |')
-    print(f'| [{d[f[10]]:4}] {d[f[11]]:4} [{d[f[12]]:4}] {d[f[13]]:4} [{d[f[14]]:4}] |')
-    print(f'|                                |')
-    print(f'|  {d[f[15]]:4}  {d[f[16]]:4}  {d[f[17]]:4}  {d[f[18]]:4}  {d[f[19]]:4}  |')
-    print(f'|                                |')
-    print(f'| [{d[f[20]]:4}] {d[f[21]]:4} [{d[f[22]]:4}] {d[f[23]]:4} [{d[f[24]]:4}] |')
-    print(f'|                                |')
-    print(f'|  {d[f[25]]:4}  {d[f[26]]:4}  {d[f[27]]:4}  {d[f[28]]:4}  {d[f[29]]:4}  |')
-    print(f'|                                |')
-    print(f'| [{d[f[30]]:4}] {d[f[31]]:4} [{d[f[32]]:4}] {d[f[33]]:4} [{d[f[34]]:4}] |')
-    print(f'|________________________________|')
-
-def print_details(m):
-    # We generate a dictionary where the chords are the keys and n_grams the values.
-    num_2 = 0
-    num_3 = 0
-    num_4 = 0
-    num_5 = 0
-    press_lookup = {}
-    for i in range(len(n.G)):
-        if m[b.G[i]] in press_lookup:
-            assert m[b.G[i]] == 0
-        else:
-            press_lookup[int(str(m[b.G[i]]))] = n.G[i]
-            if len(n.G[i]) == 2:
-                # print("i: " + str(i) + ", m[G[i]]: " + str(m[G[i]]) + ", n.G: " + n.G[i])
-                num_2 += 1
-            elif len(n.G[i]) == 3:
-                num_3 += 1
-            elif len(n.G[i]) == 4:
-                num_4 += 1
-            elif len(n.G[i]) == 5:
-                num_5 += 1
-            # elif len(n.G[i]) == 1:
-            print("i: " + str(i) + ", m[G[i]]: " + str(m[b.G[i]]) + ", n_gram: " + n.G[i])
-    print(f'Chorded-2_grams: {num_2}, 3_grams: {num_3}, 4_grams: {num_4}, 5_grams: {num_5}')
-    
-    print_config(press_lookup)
 
 # **************************************************
 # Sit back relax and let the SMT solver do the work.
@@ -140,14 +57,14 @@ def print_details(m):
 # Timeout is given in milliseconds
 s.set("timeout", (p.timeout.days * 24 * 60 * 60 + p.timeout.seconds) * 1000)
 print(f"N-Grams: {str(len(n.G))}, Setup Time: {datetime.now() - setupTime}")
-print("---------------------------------------")
-print(f"CharsPerSec - Result  - Time:This Run  - Time:All Runs")
+print("--------------------------------------------------------")
+print(f"Cost        - Result  - Time:This Run  - Time:All Runs")
 # print(s)
 # print("---------------------------------------")
 
-hi_sat = 0
-lo_unsat = float("inf")
-lo_unknown = float("inf")
+lo_sat = float("inf")
+hi_unsat = 0
+hi_unknown = 0
 search_has_failed = False
 last_print_time = datetime.min
 last_sat_time = datetime.min
@@ -156,26 +73,27 @@ last_was_update = False
 m = None
 f = open("config.txt", "a")
 # See comments above in "Guide the Search" for understanding how this works.
-while min(lo_unsat, lo_unknown, p.cps_hi) - max(hi_sat, p.cps_lo) > p.cps_res:
-    # print(f"lo_unsat: {lo_unsat}, lo_unknown: {lo_unknown}, p.cps_hi: {p.cps_hi}, hi_sat: {hi_sat}, p.cps_lo: {p.cps_lo}, p.cps_res: {p.cps_res}")
+while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res:
     solveTime = datetime.now()
 
-    # We start from p.cps_lo initially and increment up by initial_step_up
-    #   until we encounter an UNSAT or UNKNOWN problem then we begin
-    #   binary search.
+    # We start from p.cost_hi initially and decrement up by initial_step_up()
+    #   until we encounter an UNSAT or UNKNOWN problem then we decrement by
+    #   after_failure_step_up().
     if not search_has_failed:
-        guess_cps = max(hi_sat, p.cps_lo - p.initial_step_up()) + p.initial_step_up()
+        guess_cost = min(lo_sat, p.cost_hi - p.initial_step_up()) - p.initial_step_up()
     else:
-        guess_cps = p.after_failure_step_up(min(lo_unsat, lo_unknown, p.cps_hi),
-                                            max(hi_sat, p.cps_lo))
+        guess_cost = p.after_failure_step_up(min(lo_sat, p.cost_hi),
+                                            max(hi_unsat, hi_unknown, p.cost_lo))
+    assert lo_sat >= guess_cost
+    assert hi_unknown <= guess_cost
+    assert hi_unsat <= guess_cost
 
-    # For some reason the solver cannot handle this constraint:
-    #   s.add(chars_per_second >= cps)
-    #   So we calclate max cumulative cost and set the limit that way.
-    guess_max_cumulative_cost = total_count / guess_cps
+    # We add the constraint the the total cost must be less than or equal
+    #   to the guess_cost. Pushing a new state allows us to remove this constraint
+    #   if it turns out to be UNSAT/UNKNOWN.
     s.push() # Create new state
-    s.add(b.cumulative_cost[len(n.G)-1] <= guess_max_cumulative_cost)
-    
+    s.add(b.cumulative_cost[len(n.G)-1] <= guess_cost)
+
     
     result = s.check()
     guess_time = datetime.now() - solveTime
@@ -184,45 +102,43 @@ while min(lo_unsat, lo_unknown, p.cps_hi) - max(hi_sat, p.cps_lo) > p.cps_res:
             print("") # Print newline
             last_was_update = False
         last_print_time = datetime.now()
-        print(f"{guess_cps:.9f} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
+        print(f"{guess_cost:.9f} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
     else:
         print(f".", flush=True, end="")
         last_was_update = True
 
     sys.stdout = f
     if result == sat:
-        hi_sat = guess_cps
+        lo_sat = guess_cost
         m = s.model()
         if datetime.now() >= last_sat_time + p.sat_time:
             last_sat_time = datetime.now()
-            print_details(m)
+            print.print_details(m)
     elif result == unsat:
-        lo_unsat = guess_cps
+        hi_unsat = guess_cost
         search_has_failed = True
         s.pop() # Restore state (i.e. Remove guess constraint)
                 # Only remove guess constraint when it can't be attained, not when sat.
     elif result == unknown:
-        lo_unknown = guess_cps
+        hi_unknown = guess_cost
         search_has_failed = True
         s.pop() # Restore state (i.e. Remove guess constraint)
                 # Only remove guess constraint when it can't be attained, not when sat.
     sys.stdout = sys.__stdout__
 
-    # s.pop() # Restore state (i.e. Remove guess constraint)
-
 if last_was_update:
     print("") # Print newline
 print("---------------------------------------")
-print(f"Sat: {hi_sat:.4f}, Unknown: {lo_unknown:.4f}, Unsat: {lo_unsat:.4f}")
+print(f"Sat: {lo_sat:.4f}, Unknown: {hi_unknown:.4f}, Unsat: {hi_unsat:.4f}")
 print(f"Total Time: {datetime.now() - setupTime}")
 print("---------------------------------------")
 
 sys.stdout = f
-print_details(m)
+print.print_details(m)
 sys.stdout = sys.__stdout__
 f.close()
 
-print_details(m)
+print.print_details(m)
 # ******************************************************
 # TODO: Convert SMT solver output to configuration file.
 # ******************************************************

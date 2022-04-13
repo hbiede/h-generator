@@ -7,6 +7,9 @@ def load_G(G_file):
     G = list()
     with open(G_file) as f:
         for line in f:
+            # Remove trailing newline.
+            # Must be sure to not remove intentional white space.
+            line = line[:-1]
             G.append(line)
             G_size += 1
     return G, G_size

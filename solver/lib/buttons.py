@@ -52,7 +52,7 @@ def all_diff(G, s, n):
 
 def no_null(G, s, n):
     # Every string must be assigned to a chord.
-    s.add( [ G[i] != 0 for i in range(n.G) ] )
+    s.add( [ G[i] != 0 for i in range(len(n.G)) ] )
 
 def finger_bit_vector_act_as_triplets(G_D, s, n):
     # If a finger is used then the entire triplet of bits is 1, else entire triplet is 0.
@@ -395,13 +395,13 @@ def chord_cost(raw_H2_cost, s, n):
         s.add( If(G[h2_index] == 2340, raw_H2_cost[i] == 1.20038655))
 
 def stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p):
-    identical_found = false
+    identical_found = False
     for i in range(len(n.H)):
         h1_index = n.G_index[n.H1[i]]
         h2_index = n.G_index[n.H2[i]]
         if h1_index == h2_index: # Identical strings are always in stride.
             assert n.H1[i] == n.H2[i]
-            identical_found = true
+            identical_found = True
             s.add (discounted_H_cost[i] == p.stride * raw_H2_cost[i] * n.HF[i])
         else:
             assert n.H1[i] != n.H2[i]
