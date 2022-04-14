@@ -46,6 +46,7 @@ def one_button_per_finger(G, s, n):
 
 def all_diff(G, s, n):
     # No two strings can have the same combo
+    # s.add( Distinct( [G[i] for i in range(len(n.G)) ] ))
     for i in range(len(n.G) - 1):
         s.add( [ G[i] != G[j] for j in range(i + 1, len(n.G)) ] )
 
@@ -220,18 +221,28 @@ def chord_cost(raw_G_cost, G, s, n):
         s.add( Or( Not( G[i] == 2338), raw_G_cost[i] == 1.147725104))
 
 def stride_stutter_count(G_count, G, G_D, s, n, p):
-    for i in range(len(n.G)):
-        matching_h2 = []
-        for j in range(len(n.H)):
-            if n.G[i] == n.H2[j]:
-                matching_h2.append(j)
-        s.add(
-            G_count[i] == Sum([ 
-                If(G_D[h1_index] & G_D[h2_index] == 0, p.stride, # Stride discount
-                If(G_D[h1_index] & G[h2_index] == G[h1_index] & G_D[h2_index], p.stutter, # Stutter discount
-                1.0)) * # No stride or stutter discount
-                raw_H2_cost[i] * n.HF[i] for j in matching_h2])
-        )
+    identical_found = False
+    for g_index in range(len(n.G)):
+        discounted_H_freq = []
+        for h_index in range(len(n.H)):
+            if n.G[g_index] == n.H2[h_index]:
+                g_index_of_h1 = n.G_index[n.H1[h_index]]
+                g_index_of_h2 = n.G_index[n.H2[h_index]]
+
+                if g_index_of_h1 == g_index_of_h2: # Identical strings are always in stride.
+                    assert n.H1[h_index] == n.H2[h_index]
+                    identical_found = True
+                    discounted_H_freq.append( int( p.stride * n.HF[h_index]) )
+                else:
+                    assert n.H1[h_index] != n.H2[h_index]
+                    discounted_H_freq.append(
+                        If(G_D[g_index_of_h1] & G_D[g_index_of_h2] == 0, int( p.stride * n.HF[h_index]), # Stride discount
+                        If(G_D[g_index_of_h1] & G[g_index_of_h2] == G[g_index_of_h1] & G_D[g_index_of_h2], int( p.stutter * n.HF[h_index]), # Stutter discount
+                        n.HF[h_index])))
+
+        s.add( G_count[g_index] == Sum( discounted_H_freq ))
+
+    assert identical_found # We expect that this should happen at least once.
 
 def stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p):
     identical_found = False
@@ -290,8 +301,8 @@ def problem_def(s, n, p):
     stride_stutter_count(G_count, G, G_D, s, n, p)
 
     # The cost of each H according to stride, stutter, and conflict, multiplied by frequency.
-    discounted_H_cost = [ Real('dc%s' % i) for i in range(len(n.H)) ]
-    stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p)
+    # discounted_H_cost = [ Real('dc%s' % i) for i in range(len(n.H)) ]
+    # stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p)
     
     cumulative_cost = [ Real('cc%s' % i) for i in range(len(n.H)) ]
     add_up_cumulative_cost(cumulative_cost, discounted_H_cost, s, n)
