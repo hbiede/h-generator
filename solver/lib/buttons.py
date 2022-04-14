@@ -4,11 +4,13 @@ import lib
 
 @dataclass
 class Buttons:
+    total_cost
     G: list = field(default_factory=lambda: [])
     G_D: list = field(default_factory=lambda: [])
-    raw_H2_cost: list = field(default_factory=lambda: [])
-    discounted_H_cost: list = field(default_factory=lambda: [])
-    cumulative_cost: list = field(default_factory=lambda: [])
+    # raw_H2_cost: list = field(default_factory=lambda: [])
+    # discounted_H_cost: list = field(default_factory=lambda: [])
+    # cumulative_cost: list = field(default_factory=lambda: [])
+
 
 def reserve_chords_for_numbers_and_symbols(G, s, n, p):
     # Reserve chords for numbers and symbols. Choose either Index or Pinky constraints:
@@ -263,6 +265,9 @@ def stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p):
             )
     assert identical_found # We expect that this should happen at least once.
 
+def combine_chord_cost_with_count(total_cost, G_count, raw_G_cost, s, n):
+    s.add( total_cost == Sum( [ G_count[i] * raw_G_cost[i] for i in range(len(n.G)) ] ) )
+
 def add_up_cumulative_cost(cumulative_cost, discounted_H_cost, s, n):
     print(f"G Size: {len(n.G)}, H Size: {len(n.H)}")
     # This is a round about way of summing up the total cost of the
@@ -304,7 +309,11 @@ def problem_def(s, n, p):
     # discounted_H_cost = [ Real('dc%s' % i) for i in range(len(n.H)) ]
     # stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p)
     
-    cumulative_cost = [ Real('cc%s' % i) for i in range(len(n.H)) ]
-    add_up_cumulative_cost(cumulative_cost, discounted_H_cost, s, n)
+    total_cost = Real('total_cost')
+    combine_chord_cost_with_count(total_cost, G_count, raw_G_cost, s, n)
 
-    return Buttons(G=G, G_D=G_D, discounted_H_cost=discounted_H_cost, cumulative_cost=cumulative_cost)
+    # cumulative_cost = [ Real('cc%s' % i) for i in range(len(n.H)) ]
+    # add_up_cumulative_cost(cumulative_cost, discounted_H_cost, s, n)
+
+    return Buttons(total_cost=total_cost, G=G, G_D=G_D)
+    # return Buttons(G=G, G_D=G_D, discounted_H_cost=discounted_H_cost, cumulative_cost=cumulative_cost)

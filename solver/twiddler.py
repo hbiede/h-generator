@@ -45,7 +45,7 @@ b = lib.problem_def(s, n, p)
 
 # ******************************************************
 # ******************************************************
-# |   Problem: Minimize b.cumulative_cost[len(n.G)-1]  |
+# |   Problem: Minimize b.total_cost  |
 # ******************************************************
 # ******************************************************
 
@@ -91,7 +91,7 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
     #   to the guess_cost. Pushing a new state allows us to remove this constraint
     #   if it turns out to be UNSAT/UNKNOWN.
     s.push() # Create new state
-    s.add(b.cumulative_cost[len(n.G)-1] <= guess_cost)
+    s.add(b.total_cost <= guess_cost)
     
     result = s.check()
     guess_time = datetime.now() - solveTime
