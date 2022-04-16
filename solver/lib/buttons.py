@@ -7,10 +7,6 @@ class Buttons:
     total_cost: ArithRef
     G: list = field(default_factory=lambda: [])
     G_D: list = field(default_factory=lambda: [])
-    # raw_H2_cost: list = field(default_factory=lambda: [])
-    # discounted_H_cost: list = field(default_factory=lambda: [])
-    # cumulative_cost: list = field(default_factory=lambda: [])
-
 
 def reserve_chords_for_numbers_and_symbols(G, s, n, p):
     # Reserve chords for numbers and symbols. Choose either Index or Pinky constraints:
@@ -93,7 +89,7 @@ def chord_cost(raw_G_cost, G, s, n):
     #  - Estimate and minimize cost of configuration 
     # **********************************************
     for i in range(len(n.G)):
-        s.add( Or(raw_G_cost[i] == 0.538116592, raw_G_cost[i] == 0.674157303, raw_G_cost[i] == 0.97722577675, raw_G_cost[i] == 0.465116279, raw_G_cost[i] == 0.7889248097499999, raw_G_cost[i] == 0.594059406, raw_G_cost[i] == 0.8771034055, raw_G_cost[i] == 0.537003738, raw_G_cost[i] == 0.8068966744999999, raw_G_cost[i] == 0.97694756325, raw_G_cost[i] == 1.11147671125, raw_G_cost[i] == 0.78753374225, raw_G_cost[i] == 0.9231757442499999, raw_G_cost[i] == 0.876825192, raw_G_cost[i] == 1.01135434, raw_G_cost[i] == 0.470588235, raw_G_cost[i] == 0.7902927987499999, raw_G_cost[i] == 0.9603436875, raw_G_cost[i] == 1.0948728355, raw_G_cost[i] == 0.7045143635, raw_G_cost[i] == 0.9065718684999999, raw_G_cost[i] == 0.86022131625, raw_G_cost[i] == 0.9947504642499999, raw_G_cost[i] == 0.52173913, raw_G_cost[i] == 0.8030805225, raw_G_cost[i] == 0.97313141125, raw_G_cost[i] == 1.10766055925, raw_G_cost[i] == 0.7684529822500001, raw_G_cost[i] == 0.91935959225, raw_G_cost[i] == 0.8730090399999999, raw_G_cost[i] == 1.0075381879999998, raw_G_cost[i] == 0.526762113, raw_G_cost[i] == 0.8043362682499999, raw_G_cost[i] == 0.974387157, raw_G_cost[i] == 1.108916305, raw_G_cost[i] == 0.774731711, raw_G_cost[i] == 0.920615338, raw_G_cost[i] == 0.8742647857499999, raw_G_cost[i] == 1.0087939337499998, raw_G_cost[i] == 0.80294520075, raw_G_cost[i] == 0.93858720275, raw_G_cost[i] == 1.1086380915, raw_G_cost[i] == 1.2431672395, raw_G_cost[i] == 0.9192242705, raw_G_cost[i] == 1.0548662725, raw_G_cost[i] == 1.00851572025, raw_G_cost[i] == 1.1430448682499998, raw_G_cost[i] == 0.7760997, raw_G_cost[i] == 0.921983327, raw_G_cost[i] == 1.09203421575, raw_G_cost[i] == 1.22656336375, raw_G_cost[i] == 0.89237876975, raw_G_cost[i] == 1.03826239675, raw_G_cost[i] == 0.9919118444999999, raw_G_cost[i] == 1.1264409924999998, raw_G_cost[i] == 0.78888742375, raw_G_cost[i] == 0.93477105075, raw_G_cost[i] == 1.1048219394999998, raw_G_cost[i] == 1.2393510874999998, raw_G_cost[i] == 0.9051664935, raw_G_cost[i] == 1.0510501205, raw_G_cost[i] == 1.00469956825, raw_G_cost[i] == 1.1392287162499999, raw_G_cost[i] == 0.452830189, raw_G_cost[i] == 0.7858532872499999, raw_G_cost[i] == 0.955904176, raw_G_cost[i] == 1.090433324, raw_G_cost[i] == 0.694602896, raw_G_cost[i] == 0.9021323569999999, raw_G_cost[i] == 0.8557818047499999, raw_G_cost[i] == 0.9903109527499999, raw_G_cost[i] == 0.78446221975, raw_G_cost[i] == 0.92010422175, raw_G_cost[i] == 1.0901551105, raw_G_cost[i] == 1.2246842585, raw_G_cost[i] == 0.9007412895, raw_G_cost[i] == 1.0363832915, raw_G_cost[i] == 0.9900327392499999, raw_G_cost[i] == 1.12456188725, raw_G_cost[i] == 0.701442841, raw_G_cost[i] == 0.903500346, raw_G_cost[i] == 1.07355123475, raw_G_cost[i] == 1.20808038275, raw_G_cost[i] == 0.81772191075, raw_G_cost[i] == 1.01977941575, raw_G_cost[i] == 0.9734288634999999, raw_G_cost[i] == 1.1079580115, raw_G_cost[i] == 0.76538145975, raw_G_cost[i] == 0.91628806975, raw_G_cost[i] == 1.0863389584999998, raw_G_cost[i] == 1.2208681064999998, raw_G_cost[i] == 0.8816605295000001, raw_G_cost[i] == 1.0325671395, raw_G_cost[i] == 0.9862165872499999, raw_G_cost[i] == 1.1207457352499999, raw_G_cost[i] == 0.560747664, raw_G_cost[i] == 0.8354637279999999, raw_G_cost[i] == 0.98288354475, raw_G_cost[i] == 1.1174126927499999, raw_G_cost[i] == 0.81721364975, raw_G_cost[i] == 0.95174279775, raw_G_cost[i] == 0.8827611734999999, raw_G_cost[i] == 1.0172903215, raw_G_cost[i] == 0.8351855145, raw_G_cost[i] == 0.9697146624999999, raw_G_cost[i] == 1.11713447925, raw_G_cost[i] == 1.2516636272500001, raw_G_cost[i] == 0.95146458425, raw_G_cost[i] == 1.08599373225, raw_G_cost[i] == 1.0170121079999999, raw_G_cost[i] == 1.151541256, raw_G_cost[i] == 0.81858163875, raw_G_cost[i] == 0.9531107867499999, raw_G_cost[i] == 1.1005306035, raw_G_cost[i] == 1.2350597515000001, raw_G_cost[i] == 0.9348607085, raw_G_cost[i] == 1.0693898565, raw_G_cost[i] == 1.0004082322499999, raw_G_cost[i] == 1.13493738025, raw_G_cost[i] == 0.8313693625, raw_G_cost[i] == 0.9658985105, raw_G_cost[i] == 1.11331832725, raw_G_cost[i] == 1.24784747525, raw_G_cost[i] == 0.9476484322500001, raw_G_cost[i] == 1.08217758025, raw_G_cost[i] == 1.013195956, raw_G_cost[i] == 1.147725104))
+        s.add( Or(raw_G_cost[i] == 5381, raw_G_cost[i] == 6741, raw_G_cost[i] == 9772, raw_G_cost[i] == 4651, raw_G_cost[i] == 7889, raw_G_cost[i] == 5940, raw_G_cost[i] == 8771, raw_G_cost[i] == 5370, raw_G_cost[i] == 8068, raw_G_cost[i] == 9769, raw_G_cost[i] == 11114, raw_G_cost[i] == 7875, raw_G_cost[i] == 9231, raw_G_cost[i] == 8768, raw_G_cost[i] == 10113, raw_G_cost[i] == 4705, raw_G_cost[i] == 7902, raw_G_cost[i] == 9603, raw_G_cost[i] == 10948, raw_G_cost[i] == 7045, raw_G_cost[i] == 9065, raw_G_cost[i] == 8602, raw_G_cost[i] == 9947, raw_G_cost[i] == 5217, raw_G_cost[i] == 8030, raw_G_cost[i] == 9731, raw_G_cost[i] == 11076, raw_G_cost[i] == 7684, raw_G_cost[i] == 9193, raw_G_cost[i] == 8730, raw_G_cost[i] == 10075, raw_G_cost[i] == 5267, raw_G_cost[i] == 8043, raw_G_cost[i] == 9743, raw_G_cost[i] == 11089, raw_G_cost[i] == 7747, raw_G_cost[i] == 9206, raw_G_cost[i] == 8742, raw_G_cost[i] == 10087, raw_G_cost[i] == 8029, raw_G_cost[i] == 9385, raw_G_cost[i] == 11086, raw_G_cost[i] == 12431, raw_G_cost[i] == 9192, raw_G_cost[i] == 10548, raw_G_cost[i] == 10085, raw_G_cost[i] == 11430, raw_G_cost[i] == 7760, raw_G_cost[i] == 9219, raw_G_cost[i] == 10920, raw_G_cost[i] == 12265, raw_G_cost[i] == 8923, raw_G_cost[i] == 10382, raw_G_cost[i] == 9919, raw_G_cost[i] == 11264, raw_G_cost[i] == 7888, raw_G_cost[i] == 9347, raw_G_cost[i] == 11048, raw_G_cost[i] == 12393, raw_G_cost[i] == 9051, raw_G_cost[i] == 10510, raw_G_cost[i] == 10046, raw_G_cost[i] == 11392, raw_G_cost[i] == 4528, raw_G_cost[i] == 7858, raw_G_cost[i] == 9559, raw_G_cost[i] == 10904, raw_G_cost[i] == 6946, raw_G_cost[i] == 9021, raw_G_cost[i] == 8557, raw_G_cost[i] == 9903, raw_G_cost[i] == 7844, raw_G_cost[i] == 9201, raw_G_cost[i] == 10901, raw_G_cost[i] == 12246, raw_G_cost[i] == 9007, raw_G_cost[i] == 10363, raw_G_cost[i] == 9900, raw_G_cost[i] == 11245, raw_G_cost[i] == 7014, raw_G_cost[i] == 9035, raw_G_cost[i] == 10735, raw_G_cost[i] == 12080, raw_G_cost[i] == 8177, raw_G_cost[i] == 10197, raw_G_cost[i] == 9734, raw_G_cost[i] == 11079, raw_G_cost[i] == 7653, raw_G_cost[i] == 9162, raw_G_cost[i] == 10863, raw_G_cost[i] == 12208, raw_G_cost[i] == 8816, raw_G_cost[i] == 10325, raw_G_cost[i] == 9862, raw_G_cost[i] == 11207, raw_G_cost[i] == 5607, raw_G_cost[i] == 8354, raw_G_cost[i] == 9828, raw_G_cost[i] == 11174, raw_G_cost[i] == 8172, raw_G_cost[i] == 9517, raw_G_cost[i] == 8827, raw_G_cost[i] == 10172, raw_G_cost[i] == 8351, raw_G_cost[i] == 9697, raw_G_cost[i] == 11171, raw_G_cost[i] == 12516, raw_G_cost[i] == 9514, raw_G_cost[i] == 10859, raw_G_cost[i] == 10170, raw_G_cost[i] == 11515, raw_G_cost[i] == 8185, raw_G_cost[i] == 9531, raw_G_cost[i] == 11005, raw_G_cost[i] == 12350, raw_G_cost[i] == 9348, raw_G_cost[i] == 10693, raw_G_cost[i] == 10004, raw_G_cost[i] == 11349, raw_G_cost[i] == 8313, raw_G_cost[i] == 9658, raw_G_cost[i] == 11133, raw_G_cost[i] == 12478, raw_G_cost[i] == 9476, raw_G_cost[i] == 10821, raw_G_cost[i] == 10131, raw_G_cost[i] == 11477))
         s.add( Or( Not( G[i] == 2),    raw_G_cost[i] == 5381))
         s.add( Or( Not( G[i] == 8),    raw_G_cost[i] == 6741))
         s.add( Or( Not( G[i] == 10),   raw_G_cost[i] == 9772))
@@ -242,7 +238,6 @@ def stride_stutter_count(G_count, G, G_D, s, n, p):
                         If(G_D[g_index_of_h1] & G[g_index_of_h2] == G[g_index_of_h1] & G_D[g_index_of_h2], int( p.stutter * n.HF[h_index]), # Stutter discount
                         n.HF[h_index])))
         
-        # s.add( G_count[g_index] == fpRealToFP(RNE(), ToReal(Sum( discounted_H_freq )), Float16()))
         s.add( G_count[g_index] == Sum( discounted_H_freq ) )
 
     assert identical_found # We expect that this should happen at least once.
@@ -266,34 +261,9 @@ def stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p):
             )
     assert identical_found # We expect that this should happen at least once.
 
-# def combine_chord_cost_with_count(total_cost, cumulative_cost, G_count, raw_G_cost, s, n):
 def combine_chord_cost_with_count(total_cost, G_count, raw_G_cost, s, n):
-    # print(G_count[0].sort())
-    # print( fpRealToFP(RNE(), ToReal(G_count[0]), Float16()).sort() )
-    # print(raw_G_cost[0].sort())
-    # print(total_cost.sort())
-
-    # s.add( cumulative_cost[0] == fpRealToFP(RNE(), ToReal(G_count[0]), Float16()) * raw_G_cost[0])                          # C
-    # for i in range(1, len(n.G)):
-    #     # fpFMA is Fused Multiplication and Addition. A * B + C
-    #     #   See: https://smtlib.cs.uiowa.edu/theories-FloatingPoint.shtml
-    #     #   See: https://z3prover.github.io/api/html/namespacez3py.html#aec3f6d23bec15e5b77a14b7c7281e180
-    #     s.add( cumulative_cost[i] == fpFMA(RNE(),
-    #                                        fpRealToFP(RNE(), ToReal(G_count[i]), Float16()), # A
-    #                                        raw_G_cost[i],                                    # B
-    #                                        cumulative_cost[i-1]))                            # C
-    # s.add( total_cost == cumulative_cost[len(n.G) - 1] )
 
     s.add( total_cost == Sum( [ G_count[i] * raw_G_cost[i] for i in range(len(n.G)) ] ) )
-    # s.add( total_cost == Sum( [ fpRealToFP(RNE(), ToReal(G_count[i]), Float16()) * raw_G_cost[i] for i in range(len(n.G)) ] ) )
-
-def add_up_cumulative_cost(cumulative_cost, discounted_H_cost, s, n):
-    print(f"G Size: {len(n.G)}, H Size: {len(n.H)}")
-    # This is a round about way of summing up the total cost of the
-    #   whole problem. Keep in mind that we are limited to 1st-order logic
-    s.add(cumulative_cost[0] == discounted_H_cost[0])
-    s.add( [ cumulative_cost[i] == cumulative_cost[i-1] + discounted_H_cost[i] \
-                for i in range(1, len(n.H)) ] )
 
 # ***************************************
 # Problem Definition and hard constraints
@@ -317,28 +287,13 @@ def problem_def(s, n, p):
     finger_used_when_single_button_on_finger_used(G_D, G, s, n)
 
     # The raw cost of pressing each g.
-    # raw_G_cost = [ FP('rc%s' % i, Float16()) for i in range(len(n.G)) ]
     raw_G_cost = [ Int('rc%s' % i) for i in range(len(n.G)) ]
     chord_cost(raw_G_cost, G, s, n)
 
-    # The count of each H, possibly reduced by stride or stutter.
-    # G_count = [ BitVec('g_cnt%s' % i, 32) for i in range(len(n.G)) ]
     G_count = [ Int('g_cnt%s' % i) for i in range(len(n.G)) ]
-    # G_count = [ Int('g_cnt%s' % i) for i in range(len(n.G)) ]
     stride_stutter_count(G_count, G, G_D, s, n, p)
 
-    # The cost of each H according to stride, stutter, and conflict, multiplied by frequency.
-    # discounted_H_cost = [ Real('dc%s' % i) for i in range(len(n.H)) ]
-    # stride_stutter_discount(raw_H2_cost, discounted_H_cost, G, G_D, s, n, p)
-    
-    # total_cost = FP('total_cost', Float16())
-    # cumulative_cost = [ FP('cc%s' % i, Float16()) for i in range(len(n.G)) ]
     total_cost = Int('total_cost')
     combine_chord_cost_with_count(total_cost, G_count, raw_G_cost, s, n)
-    # combine_chord_cost_with_count(total_cost, cumulative_cost, G_count, raw_G_cost, s, n)
-
-    # cumulative_cost = [ Real('cc%s' % i) for i in range(len(n.H)) ]
-    # add_up_cumulative_cost(cumulative_cost, discounted_H_cost, s, n)
 
     return Buttons(total_cost=total_cost, G=G, G_D=G_D)
-    # return Buttons(G=G, G_D=G_D, discounted_H_cost=discounted_H_cost, cumulative_cost=cumulative_cost)
