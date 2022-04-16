@@ -288,6 +288,7 @@ def problem_def(s, n, p):
 
     # The raw cost of pressing each g.
     raw_G_cost = [ Int('rc%s' % i) for i in range(len(n.G)) ]
+    all_diff(raw_G_cost, s, n)
     chord_cost(raw_G_cost, G, s, n)
 
     G_count = [ Int('g_cnt%s' % i) for i in range(len(n.G)) ]
