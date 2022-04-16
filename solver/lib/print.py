@@ -4,7 +4,7 @@ import sys
 # Print out quick view of what configuration looks like.
 # ******************************************************
 
-def print_config(d):
+def print_config(d, m, b):
     # The default buttons and double row buttons
     f = [
         2048, 3072, 1024, 1536, 512,
@@ -23,9 +23,12 @@ def print_config(d):
         if x not in d:
             d[x] = ""
     # print(f[0].sort())
+    
+    actual_cost = int(str(m[b.total_cost]))
+    print(f'Total Cost: {actual_cost}')
     print(f'\n   Left       Middle       Right', file=sys.stderr)
     print(f' ________________________________', file=sys.stderr)
-    print(f'|              Space      BckSpc | <-- Mouseclick buttons', file=sys.stderr)
+    print(f'|                                | <-- Mouseclick buttons', file=sys.stderr)
     print(f'|--------------------------------|', file=sys.stderr)
     print(f'| [{d[f[0]]:4}] {d[f[1]]:4} [{d[f[2]]:4}] {d[f[3]]:4} [{d[f[4]]:4}] |', file=sys.stderr)
     print(f'|                                |', file=sys.stderr)
@@ -71,4 +74,4 @@ def print_details(s, m, b, n):
             print("i: " + str(i) + ", m[G[i]]: " + str(m[b.G[i]]) + ", n_gram: " + n.G[i], file=sys.stderr)
     print(f'Chorded-2_grams: {num_2}, 3_grams: {num_3}, 4_grams: {num_4}, 5_grams: {num_5}', file=sys.stderr)
     
-    print_config(press_lookup)
+    print_config(press_lookup, m, b)

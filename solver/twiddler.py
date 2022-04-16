@@ -103,11 +103,13 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
     elif result == unsat:
         hi_unsat = guess_cost
         search_has_failed = True
+        lib.print_details(s, m, b, n)
         s.pop() # Restore state (i.e. Remove guess constraint)
                 # Only remove guess constraint when it can't be attained, not when sat.
     elif result == unknown:
         hi_unknown = guess_cost
         search_has_failed = True
+        lib.print_details(s, m, b, n)
         s.pop() # Restore state (i.e. Remove guess constraint)
                 # Only remove guess constraint when it can't be attained, not when sat.
 
@@ -116,11 +118,8 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
             print("") # Print newline
             last_was_update = False
         last_print_time = datetime.now()
-        if result == sat:
-            actual_cost = int(str(m[b.total_cost]))
-            print(f"{guess_cost:<28,} - {actual_cost:<28,} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
-        else:
-            print(f"{guess_cost:<28,} -                         - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
+        actual_cost = int(str(m[b.total_cost]))
+        print(f"{int(guess_cost):<23,} - {actual_cost:<23,} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
     else:
         print(f".", flush=True, end="")
         last_was_update = True
