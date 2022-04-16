@@ -57,10 +57,8 @@ b = lib.problem_def(s, n, p)
 # Timeout is given in milliseconds
 s.set("timeout", (p.timeout.days * 24 * 60 * 60 + p.timeout.seconds) * 1000)
 print(f"N-Grams: {str(len(n.G))}, Setup Time: {datetime.now() - setupTime}")
-print("--------------------------------------------------------")
-print(f"Cost        - Result  - Time:This Run  - Time:All Runs")
-# print(s)
-# print("---------------------------------------")
+print("---------------------------------------------------------------------------------------------")
+print(f"Cost Constraint         - Actual Cost             - Result  - Time:This Run  - Time:All Runs")
 
 lo_sat = float("inf")
 hi_unsat = 0
@@ -95,22 +93,13 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
     
     result = s.check()
     guess_time = datetime.now() - solveTime
-    if datetime.now() >= last_print_time + p.update_time:
-        if last_was_update:
-            print("") # Print newline
-            last_was_update = False
-        last_print_time = datetime.now()
-        print(f"{guess_cost:.2f} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
-    else:
-        print(f".", flush=True, end="")
-        last_was_update = True
-
+    
     if result == sat:
         lo_sat = guess_cost
         m = s.model()
         if datetime.now() >= last_sat_time + p.sat_time:
             last_sat_time = datetime.now()
-            lib.print_details(m, b, n)
+            lib.print_details(s, m, b, n)
     elif result == unsat:
         hi_unsat = guess_cost
         search_has_failed = True
@@ -122,16 +111,31 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
         s.pop() # Restore state (i.e. Remove guess constraint)
                 # Only remove guess constraint when it can't be attained, not when sat.
 
+    if datetime.now() >= last_print_time + p.update_time:
+        if last_was_update:
+            print("") # Print newline
+            last_was_update = False
+        last_print_time = datetime.now()
+        if result == sat:
+            actual_cost = int(str(m[b.total_cost]))
+            print(f"{guess_cost:<23,} - {actual_cost:<23,} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
+        else:
+            print(f"{guess_cost:<23,} -                         - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
+    else:
+        print(f".", flush=True, end="")
+        last_was_update = True
+
+
 if last_was_update:
     print("") # Print newline
-print("---------------------------------------")
-print(f"Sat: {lo_sat:.4f}, Unknown: {hi_unknown:.4f}, Unsat: {hi_unsat:.4f}")
+print("---------------------------------------------------------------------------------------------")
+print(f"Sat: {lo_sat}, Unknown: {hi_unknown}, Unsat: {hi_unsat}")
 print(f"Total Time: {datetime.now() - setupTime}")
-print("---------------------------------------")
+print("---------------------------------------------------------------------------------------------")
 
-lib.print_details(m, b, n)
+lib.print_details(s, m, b, n)
 
-lib.print_details(m, b, n)
+lib.print_details(s, m, b, n)
 # ******************************************************
 # TODO: Convert SMT solver output to configuration file.
 # ******************************************************

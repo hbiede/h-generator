@@ -40,16 +40,19 @@ def print_config(d):
     print(f'|  {d[f[25]]:4}  {d[f[26]]:4}  {d[f[27]]:4}  {d[f[28]]:4}  {d[f[29]]:4}  |', file=sys.stderr)
     print(f'|                                |', file=sys.stderr)
     print(f'| [{d[f[30]]:4}] {d[f[31]]:4} [{d[f[32]]:4}] {d[f[33]]:4} [{d[f[34]]:4}] |', file=sys.stderr)
-    print(f'|________________________________|', file=sys.stderr)
+    print(f'|________________________________|', file=sys.stderr, flush = True)
 
-def print_details(m, b, n):
+def print_details(s, m, b, n):
     # We generate a dictionary where the chords are the keys and n_grams the values.
     num_2 = 0
     num_3 = 0
     num_4 = 0
     num_5 = 0
     press_lookup = {}
-    print(m) # Uncomment to debug.
+    if m == None:
+        print(s.unsat_core())
+        return
+    # print(m) # Uncomment to debug.
     for i in range(len(n.G)):
         if m[b.G[i]] in press_lookup:
             assert m[b.G[i]] == 0
