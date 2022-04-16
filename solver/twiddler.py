@@ -118,9 +118,9 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
         last_print_time = datetime.now()
         if result == sat:
             actual_cost = int(str(m[b.total_cost]))
-            print(f"{guess_cost:<23,} - {actual_cost:<23,} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
+            print(f"{guess_cost:<28,} - {actual_cost:<28,} - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
         else:
-            print(f"{guess_cost:<23,} -                         - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
+            print(f"{guess_cost:<28,} -                         - {str(result):7} - {guess_time} - {datetime.now() - solver_time}")
     else:
         print(f".", flush=True, end="")
         last_was_update = True
