@@ -71,7 +71,7 @@ class TestFileIO < Test::Unit::TestCase
   end
 
   def test_write_h_file
-    file = './temp.test_write_h_file.txt'
+    file = './test_write_h_file.txt'
     FileIO.write_h_file(file, { 'a_:::_b' => 2, 'b_:::_c' => 1, 'c_:::_ation' => 3, 'd_:::_og' => 10, 'e_:::_gg' => 0 })
     assert_equal(true, File.exist?(file))
 

@@ -7,6 +7,7 @@
 # Defaults
 $output_file = './output_frequency_table.txt'
 $words_to_parse = '10000'
+$must_match_alphabet = true
 
 ERROR_CODES = {
   IMPOSSIBLE_COMBO: 3,
@@ -112,6 +113,25 @@ class ArgParser
     args[out_file_index]
   end
 
+  # Parse for a required matching alphabet
+  #
+  # @param args [Array] The arguments to parse
+  # @return [Boolean] True if must match the given alphabet for all words in frequency table
+  # @raise [SystemExit] If the value is input incorrectly
+  def self.parse_must_match_alphabet(args)
+    matching_arg = args.find { |arg| arg.match(/-m|--match/) }
+    return $must_match_alphabet if matching_arg.nil?
+
+    out_file_index = args.find_index(matching_arg) + 1
+    if out_file_index >= args.length || args[out_file_index].start_with?('-')
+      warn 'Invalid argument usage'
+      warn generate_help_text
+      exit ERROR_CODES[:INCOMPLETE_ARGS]
+    end
+
+    args[out_file_index].downcase == 'true'
+  end
+
   # Ensure word count args are valid
   #
   # @param args [Array] The arguments to parse
@@ -143,14 +163,15 @@ class ArgParser
   # Parses all arguments and returns a list
   #
   # @param args [Array] list of arguments
-  # @return [Array<String>] list of arguments
+  # @return [Array<String, Boolean>] list of arguments
   def self.parse_args(args)
     parse_help args
     g_in = parse_g_input_file args
     freq_in = parse_freq_input_file args
     out = parse_output_file args
     count = parse_word_count args
-    [g_in, freq_in, out, count]
+    must_match = parse_must_match_alphabet args
+    [g_in, freq_in, out, count, must_match]
   end
 end
 
@@ -191,8 +212,8 @@ class FileIO
 
   # Write the output file
   #
-  # @param [String] output_file The file to write the data to
-  # @param [Hash{String => Integer}] data The data to write to the output file
+  # @param output_file [String] The file to write the data to
+  # @param data [Hash{String => Integer}] The data to write to the output file
   # @return [void]
   def self.write_h_file(output_file, data)
     f = File.open(output_file, 'w')
@@ -205,6 +226,7 @@ class FileIO
       g1, g2 = key.split('_:::_')
       f.puts "#{g1}#{g2},#{g1},#{g2},#{value}"
     end
+    f.close
   end
 end
 
@@ -232,13 +254,17 @@ class FrequencyGenerator
   # @param word_to_split [String] The full word to split
   # @param curr [String] The current string to check. Expected to be a suffix substring of the word to split
   # @param g_set [Array<String>] The set of strings in the alphabet
+  # @param must_succeed [Boolean] Whether or not the current string must be input-able from the current alphabet
   # @return [String] The longest possible string in the alphabet that is a prefix substring of the word to split
   # @raise [SystemExit] If the alphabet does not contain sufficient characters to map the space
-  def self.find_greedy_next(word_to_split, curr, g_set)
+  def self.find_greedy_next(word_to_split, curr, g_set, must_succeed)
     substrings = g_set.filter { |g| !Regexp.new("^#{g}").match(curr).nil? }
     if substrings.length.zero?
-      warn "Error: #{word_to_split} is not possible to type with the alphabet"
-      exit ERROR_CODES[:IMPOSSIBLE_COMBO]
+      if must_succeed
+        warn "Error: #{word_to_split} is not possible to type with the alphabet"
+        exit ERROR_CODES[:IMPOSSIBLE_COMBO]
+      end
+      return ''
     end
     # Not possible for this to be nil due to prior checks
     # noinspection RubyMismatchedReturnType
@@ -250,12 +276,15 @@ class FrequencyGenerator
   #
   # @param word_to_split [String] The word to split
   # @param g_set [Array<String>] The set of strings in the alphabet
+  # @param must_match [Boolean] Whether or not the alphabet must be able to map the word
   # @return [Array<String>] The resulting array of strings
-  def self.theta_splitter(word_to_split, g_set)
+  def self.theta_splitter(word_to_split, g_set, must_match)
     curr = word_to_split
     result = [' ']
     while curr.length.positive?
-      next_piece = find_greedy_next(word_to_split, curr, g_set)
+      next_piece = find_greedy_next(word_to_split, curr, g_set, must_match)
+      return [] if next_piece.empty?
+
       result << next_piece
       curr = curr.gsub(Regexp.new("^#{next_piece}"), '')
     end
@@ -265,14 +294,17 @@ class FrequencyGenerator
 
   # Parse a word into the substrings used to enter it, and append the frequencies of adjacent chords to H
   #
-  # @param [String] word The word to split
-  # @param [Integer] freq The number of times `word` appears in the frequency data set
-  # @param [Array<String>] g_set The alphabet set
-  # @param [Hash{String => Integer}] h_set The H set mapping
+  # @param word [String] The word to split
+  # @param freq [Integer] The number of times `word` appears in the frequency data set
+  # @param g_set [Array<String>] The alphabet set
+  # @param h_set [Hash{String => Integer}] The H set mapping
+  # @param must_match [Boolean] Whether or not the alphabet must be able to map the word
   # @return [void]
   # @raise [SystemExit] If the alphabet does not contain sufficient characters to map the space
-  def self.add_to_h_set(word, freq, g_set, h_set)
-    parts = theta_splitter(word, g_set)
+  def self.add_to_h_set(word, freq, g_set, h_set, must_match)
+    parts = theta_splitter(word, g_set, must_match)
+    return if parts.empty?
+
     parts[0, parts.length - 1].each_with_index do |part, i|
       concat = "#{part}_:::_#{parts[i + 1]}"
       unless h_set.key? concat
@@ -285,13 +317,14 @@ class FrequencyGenerator
 
   # Generate the H mapping based on the frequency data set
   #
-  # @param [Array<String>] g_set The alphabet set
-  # @param [Hash{String => Integer}] h_set The H mapping
-  # @param [Hash{String => Integer}] freq_set The frequency data set
+  # @param g_set [Array<String>] The alphabet set
+  # @param h_set [Hash{String => Integer}] The H mapping
+  # @param freq_set [Hash{String => Integer}] The frequency data set
+  # @param must_match [Boolean] Whether or not the alphabet must be able to map the word
   # @return [void]
-  def self.generate_frequency_set(g_set, h_set, freq_set)
+  def self.generate_frequency_set(g_set, h_set, freq_set, must_match)
     freq_set.each_pair do |key, value|
-      add_to_h_set(key, value, g_set, h_set)
+      add_to_h_set(key, value, g_set, h_set, must_match)
     end
   end
 end
@@ -301,14 +334,14 @@ end
 #
 # @return [void]
 def main(args)
-  (g_in, freq_in, out, count) = ArgParser.parse_args args
+  (g_in, freq_in, out, count, must_match) = ArgParser.parse_args args
   out = out.to_i
 
   freq_list = FileIO.read_freq_file(freq_in, count)
   g_set = FileIO.read_g_file(g_in)
 
   h_set = ComboGenerator.generate_h g_set
-  FrequencyGenerator.generate_frequency_set(g_set, h_set, freq_list)
+  FrequencyGenerator.generate_frequency_set(g_set, h_set, freq_list, must_match)
 
   FileIO.write_h_file(out, h_set)
 end

@@ -12,27 +12,27 @@ class TestFrequencyGenerator < Test::Unit::TestCase
     word_to_split = 'therefore'
     g_set = %w[the t he re ere fo f for e o]
 
-    assert_equal('the', FrequencyGenerator.find_greedy_next(word_to_split, 'the', g_set))
-    assert_equal('the', FrequencyGenerator.find_greedy_next(word_to_split, 'therefore', g_set))
-    assert_equal('he', FrequencyGenerator.find_greedy_next(word_to_split, 'herefore', g_set))
-    assert_equal('ere', FrequencyGenerator.find_greedy_next(word_to_split, 'erefore', g_set))
-    assert_equal('re', FrequencyGenerator.find_greedy_next(word_to_split, 'refore', g_set))
-    assert_equal('e', FrequencyGenerator.find_greedy_next(word_to_split, 'efore', g_set))
-    assert_equal('for', FrequencyGenerator.find_greedy_next(word_to_split, 'fore', g_set))
-    assert_equal('o', FrequencyGenerator.find_greedy_next(word_to_split, 'ore', g_set))
-    assert_equal('re', FrequencyGenerator.find_greedy_next(word_to_split, 're', g_set))
-    assert_equal('e', FrequencyGenerator.find_greedy_next(word_to_split, 'e', g_set))
+    assert_equal('the', FrequencyGenerator.find_greedy_next(word_to_split, 'the', g_set, true))
+    assert_equal('the', FrequencyGenerator.find_greedy_next(word_to_split, 'therefore', g_set, true))
+    assert_equal('he', FrequencyGenerator.find_greedy_next(word_to_split, 'herefore', g_set, true))
+    assert_equal('ere', FrequencyGenerator.find_greedy_next(word_to_split, 'erefore', g_set, true))
+    assert_equal('re', FrequencyGenerator.find_greedy_next(word_to_split, 'refore', g_set, true))
+    assert_equal('e', FrequencyGenerator.find_greedy_next(word_to_split, 'efore', g_set, true))
+    assert_equal('for', FrequencyGenerator.find_greedy_next(word_to_split, 'fore', g_set, true))
+    assert_equal('o', FrequencyGenerator.find_greedy_next(word_to_split, 'ore', g_set, true))
+    assert_equal('re', FrequencyGenerator.find_greedy_next(word_to_split, 're', g_set, true))
+    assert_equal('e', FrequencyGenerator.find_greedy_next(word_to_split, 'e', g_set, true))
   end
 
   def test_theta_splitter
     g_set = %w[the t he re ere fo f for e o]
-    assert_equal([' ', 'the', 're', 'for', 'e', ' '], FrequencyGenerator.theta_splitter('therefore', g_set))
-    assert_equal([' ', 'the', ' '], FrequencyGenerator.theta_splitter('the', g_set))
-    assert_equal([' ', 'he', 're', ' '], FrequencyGenerator.theta_splitter('here', g_set))
+    assert_equal([' ', 'the', 're', 'for', 'e', ' '], FrequencyGenerator.theta_splitter('therefore', g_set, true))
+    assert_equal([' ', 'the', ' '], FrequencyGenerator.theta_splitter('the', g_set, true))
+    assert_equal([' ', 'he', 're', ' '], FrequencyGenerator.theta_splitter('here', g_set, true))
     # Errors on words that are impossible given the g_set
-    assert_raise(SystemExit) { FrequencyGenerator.theta_splitter('wherefore', g_set) }
-    assert_raise(SystemExit) { FrequencyGenerator.theta_splitter('alphabet', g_set) }
-    assert_raise(SystemExit) { FrequencyGenerator.theta_splitter('test', g_set) }
+    assert_raise(SystemExit) { FrequencyGenerator.theta_splitter('wherefore', g_set, true) }
+    assert_raise(SystemExit) { FrequencyGenerator.theta_splitter('alphabet', g_set, true) }
+    assert_raise(SystemExit) { FrequencyGenerator.theta_splitter('test', g_set, true) }
   end
 
   def test_add_to_h_set
@@ -48,7 +48,7 @@ class TestFrequencyGenerator < Test::Unit::TestCase
       'e_:::_ ' => 0
     }
     new_h = initial_h_set.clone
-    FrequencyGenerator.add_to_h_set('there', 10, g_set, new_h)
+    FrequencyGenerator.add_to_h_set('there', 10, g_set, new_h, true)
     assert_equal({
                    **initial_h_set,
                    'the_:::_re' => 10,
@@ -57,7 +57,11 @@ class TestFrequencyGenerator < Test::Unit::TestCase
                  }, new_h)
 
     new_h = initial_h_set.clone
-    FrequencyGenerator.add_to_h_set('here', 25, g_set, new_h)
+    FrequencyGenerator.add_to_h_set('NotInAlphabet', 10, g_set, new_h, false)
+    assert_equal(initial_h_set.clone, new_h)
+
+    new_h = initial_h_set.clone
+    FrequencyGenerator.add_to_h_set('here', 25, g_set, new_h, true)
     assert_equal({
                    **initial_h_set,
                    'he_:::_re' => 25,
@@ -66,7 +70,7 @@ class TestFrequencyGenerator < Test::Unit::TestCase
                  }, new_h)
 
     new_h = initial_h_set.clone
-    FrequencyGenerator.add_to_h_set('therefore', 1000, g_set, new_h)
+    FrequencyGenerator.add_to_h_set('therefore', 1000, g_set, new_h, true)
     assert_equal({
                    **initial_h_set,
                    'the_:::_re' => 1000,
@@ -76,7 +80,7 @@ class TestFrequencyGenerator < Test::Unit::TestCase
                    'e_:::_ ' => 1000
                  }, new_h)
 
-    assert_raise(SystemExit) { FrequencyGenerator.add_to_h_set('error', 1000, ['error'], initial_h_set.clone) }
+    assert_raise(SystemExit) { FrequencyGenerator.add_to_h_set('error', 1000, ['error'], initial_h_set.clone, true) }
   end
 
   def test_generate_frequency_set
@@ -92,7 +96,7 @@ class TestFrequencyGenerator < Test::Unit::TestCase
       'e_:::_ ' => 0
     }
     new_h = initial_h_set.clone
-    FrequencyGenerator.generate_frequency_set(g_set, new_h, { 'there' => 30, 'here' => 50 })
+    FrequencyGenerator.generate_frequency_set(g_set, new_h, { 'there' => 30, 'here' => 50 }, true)
     assert_equal({ **initial_h_set,
                    ' _:::_the' => 30,
                    ' _:::_he' => 50,

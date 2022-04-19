@@ -91,12 +91,34 @@ class TestArgParser < Test::Unit::TestCase
     assert_raise(SystemExit) { ArgParser.parse_word_count(%w[--words-to-parse not_a_number]) }
   end
 
+  def test_parse_must_match_alphabet
+    assert_nothing_raised { ArgParser.parse_must_match_alphabet(%w[--match true]) }
+    assert_equal(true, ArgParser.parse_must_match_alphabet(%w[--match true]))
+    assert_nothing_raised { ArgParser.parse_must_match_alphabet(%w[--match TRUE]) }
+    assert_equal(true, ArgParser.parse_must_match_alphabet(%w[--match TRUE]))
+    assert_nothing_raised { ArgParser.parse_must_match_alphabet(%w[--match True]) }
+    assert_equal(true, ArgParser.parse_must_match_alphabet(%w[--match True]))
+    assert_nothing_raised { ArgParser.parse_must_match_alphabet(%w[-m true]) }
+    assert_equal(true, ArgParser.parse_must_match_alphabet(%w[-m true]))
+    assert_nothing_raised { ArgParser.parse_must_match_alphabet(%w[--match false]) }
+    assert_equal(false, ArgParser.parse_must_match_alphabet(%w[--match false]))
+    assert_nothing_raised { ArgParser.parse_must_match_alphabet(%w[-m false]) }
+    assert_equal(false, ArgParser.parse_must_match_alphabet(%w[-m false]))
+
+    assert_raise(SystemExit) { ArgParser.parse_must_match_alphabet(%w[-m]) }
+    assert_raise(SystemExit) { ArgParser.parse_must_match_alphabet(%w[--match]) }
+    assert_raise(SystemExit) { ArgParser.parse_must_match_alphabet(%w[-m -o test.txt]) }
+    assert_raise(SystemExit) { ArgParser.parse_must_match_alphabet(%w[--match -o test.txt]) }
+  end
+
   def test_parse_args
     assert_nothing_raised do
       ArgParser.parse_args(%w[--words-to-parse 12,000 -o ./test.txt -f ./data/freq.txt -g alphabet.txt])
     end
-    assert_equal(%w[alphabet.txt ./data/freq.txt ./test.txt 12000],
+    assert_equal(['alphabet.txt', './data/freq.txt', './test.txt', '12000', true],
                  ArgParser.parse_args(%w[--words-to-parse 12,000 -o ./test.txt -f ./data/freq.txt -g alphabet.txt]))
+    assert_equal(['alphabet.txt', './data/freq.txt', './test.txt', '12000', false],
+                 ArgParser.parse_args(%w[--words-to-parse 12,000 -o ./test.txt -f ./data/freq.txt -g alphabet.txt --match false]))
     assert_raise(SystemExit) do
       ArgParser.parse_args(%w[--words-to-parse -o ./test.txt -f ./data/freq.txt -g alphabet.txt --help])
     end
