@@ -118,7 +118,8 @@ class TestArgParser < Test::Unit::TestCase
     assert_equal(['alphabet.txt', './data/freq.txt', './test.txt', '12000', true],
                  ArgParser.parse_args(%w[--words-to-parse 12,000 -o ./test.txt -f ./data/freq.txt -g alphabet.txt]))
     assert_equal(['alphabet.txt', './data/freq.txt', './test.txt', '12000', false],
-                 ArgParser.parse_args(%w[--words-to-parse 12,000 -o ./test.txt -f ./data/freq.txt -g alphabet.txt --match false]))
+                 ArgParser.parse_args(%w[--words-to-parse 12,000 -o ./test.txt -f ./data/freq.txt -g alphabet.txt
+                                         --match false]))
     assert_raise(SystemExit) do
       ArgParser.parse_args(%w[--words-to-parse -o ./test.txt -f ./data/freq.txt -g alphabet.txt --help])
     end
