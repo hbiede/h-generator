@@ -25,7 +25,7 @@ def print_config(d, m, b):
     # print(f[0].sort())
     
     actual_cost = int(str(m[b.total_cost]))
-    print(f'Total Cost: {actual_cost}')
+    print(f'Total Cost: {actual_cost}', file=sys.stderr)
     print(f'\n   Left       Middle       Right', file=sys.stderr)
     print(f' ________________________________', file=sys.stderr)
     print(f'|                                | <-- Mouseclick buttons', file=sys.stderr)
