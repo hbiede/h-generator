@@ -40,7 +40,10 @@ b = lib.problem_def(s, n, p)
 # s.add(Extract(11, 11, b.F[n.index['H']]) == 0) #Ends 2.71% of words
 
 # If E cannot use *M** can it achieve 2.6846? If not fix E here.
-# s.add(Extract(7, 7, b.G[n.index['E']]) == 0)
+# s.add(b.G[n.G_index[' ']] == 2)
+# s.add(b.G[n.G_index['E']] == 1024)
+# s.add(b.G[n.G_index['T']] == 16)
+# s.add(b.G[n.G_index['H']] == 128)
 
 
 # ******************************************************
@@ -95,11 +98,19 @@ while min(lo_sat, p.cost_hi) - max(hi_unsat, hi_unknown, p.cost_lo) > p.cost_res
     guess_time = datetime.now() - solveTime
     
     if result == sat:
-        lo_sat = guess_cost
         m = s.model()
+        actual_cost = int(str(m[b.total_cost]))
+        lo_sat = actual_cost
         if datetime.now() >= last_sat_time + p.sat_time:
             last_sat_time = datetime.now()
             lib.print_details(s, m, b, n)
+
+        # Sometimes after a timeout (i.e. unknown) a subsequent guess
+        #   will be better than the guess_cost that timed_out. In this case
+        #   we reset the highest unknown to 0. 
+        if lo_sat < hi_unknown:
+            hi_unknown = 0
+        assert lo_sat > hi_unsat
     elif result == unsat:
         hi_unsat = guess_cost
         search_has_failed = True
