@@ -114,7 +114,8 @@ for index in range(4):
                     cost = max_cost
                 else:
                     cost = max_cost + 0.25 * fingers * mean_cost
-
+                cost = round(cost * 10000)
+                
                 # 3) Print every chord
                 chord_int = chord_to_int(index, middle, ring, pinky)
                 print(f"s.add( Or( Not( G[h2_index] == {chord_int}), raw_H2_cost[i] == {cost}))")
