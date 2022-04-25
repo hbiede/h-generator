@@ -45,7 +45,7 @@ def print_config(d, m, b):
     print(f'| [{d[f[30]]:4}] {d[f[31]]:4} [{d[f[32]]:4}] {d[f[33]]:4} [{d[f[34]]:4}] |', file=sys.stderr)
     print(f'|________________________________|', file=sys.stderr, flush = True)
 
-def print_details(s, m, b, n):
+def print_details(s, m, b, n, this_run_time, all_run_time):
     # We generate a dictionary where the chords are the keys and n_grams the values.
     num_2 = 0
     num_3 = 0
@@ -73,5 +73,6 @@ def print_details(s, m, b, n):
             # elif len(n.G[i]) == 1:
             print("i: " + str(i) + ", m[G[i]]: " + str(m[b.G[i]]) + ", n_gram: " + n.G[i], file=sys.stderr)
     print(f'Chorded-2_grams: {num_2}, 3_grams: {num_3}, 4_grams: {num_4}, 5_grams: {num_5}', file=sys.stderr)
+    print(f'Time for this run: {this_run_time}, Time for all runs: {all_run_time}', file=sys.stderr)
     
     print_config(press_lookup, m, b)
