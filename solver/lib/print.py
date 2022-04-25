@@ -71,7 +71,9 @@ def print_details(s, m, b, n, this_run_time, all_run_time):
             elif len(n.G[i]) == 5:
                 num_5 += 1
             # elif len(n.G[i]) == 1:
-            print("i: " + str(i) + ", m[G[i]]: " + str(m[b.G[i]]) + ", n_gram: " + n.G[i], file=sys.stderr)
+
+            # print("i: " + str(i) + ", m[G[i]]: " + str(m[b.G[i]]) + ", n_gram: " + n.G[i], file=sys.stderr)
+            print(f"s.add(G[n.G_index['{n.G[i]}']] == {str(m[b.G[i]])})", file=sys.stderr)
     print(f'Chorded-2_grams: {num_2}, 3_grams: {num_3}, 4_grams: {num_4}, 5_grams: {num_5}', file=sys.stderr)
     print(f'Time for this run: {this_run_time}, Time for all runs: {all_run_time}', file=sys.stderr)
     

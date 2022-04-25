@@ -15,32 +15,6 @@ p = lib.Parameters.setup()
 n = lib.NGrams.load_G_H(p)
 b = lib.problem_def(s, n, p)
 
-# ********************************
-# |   Incorporate all of these   |
-# |   into problem_def() above   |
-# ********************************
-# lib.mcc_from_scc(s, n, b)
-
-# These letters frequently end words, so we don't want them
-#   using the index finger, so they stride with SPACE.
-# s.add(Extract(11, 11, b.F[n.index['E']]) == 0) #Ends 20.1% of words
-# s.add(Extract(11, 11, b.F[n.index['S']]) == 0) #Ends 12.9% of words
-# s.add(Extract(11, 11, b.F[n.index['D']]) == 0) #Ends 9.98% of words
-# s.add(Extract(11, 11, b.F[n.index['N']]) == 0) #Ends 9.31% of words
-# s.add(Extract(11, 11, b.F[n.index['T']]) == 0) #Ends 8.97% of words
-# s.add(Extract(11, 11, b.F[n.index['Y']]) == 0) #Ends 6.00% of words
-# s.add(Extract(11, 11, b.F[n.index['R']]) == 0) #Ends 5.90% of words
-# s.add(Extract(11, 11, b.F[n.index['F']]) == 0) #Ends 4.71% of words
-# s.add(Extract(11, 11, b.F[n.index['O']]) == 0) #Ends 4.18% of words
-# s.add(Extract(11, 11, b.F[n.index['L']]) == 0) #Ends 3.47% of words
-# s.add(Extract(11, 11, b.F[n.index['G']]) == 0) #Ends 2.94% of words
-# s.add(Extract(11, 11, b.F[n.index['A']]) == 0) #Ends 2.82% of words
-# s.add(Extract(11, 11, b.F[n.ind ex['H']]) == 0) #Ends 2.71% of words
-
-# s.add(b.G[n.G_index[' ']] == 2)
-# s.add(b.G[n.G_index['E']] == 1024)
-# s.add(b.G[n.G_index['T']] == 16)
-# s.add(b.G[n.G_index['H']] == 128)
 
 # ******************************************************
 # ******************************************************
