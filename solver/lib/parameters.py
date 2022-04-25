@@ -70,7 +70,7 @@ class Parameters:
         assert p.cost_hi > p.cost_lo
         assert p.cost_hi - p.cost_lo > p.cost_res
         p.print_parameters(sys.stdout)
-        p.print_parameters(sys.stdout)
+        p.print_parameters(sys.stderr)
         return p
 
     def initial_step_up(self) -> float:
