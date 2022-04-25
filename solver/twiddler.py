@@ -1,7 +1,6 @@
 from z3 import *
 from datetime import datetime, timedelta
 import lib
-import sys
 
 # Twiddler BitVector Index
 #   L   M   R
@@ -12,7 +11,6 @@ import sys
 
 setupTime = datetime.now()
 s = Solver()
-set_option(max_args=10000000, max_lines=1000000, max_depth=10000000, max_visited=1000000)
 p = lib.Parameters.setup()
 n = lib.NGrams.load_G_H(p)
 b = lib.problem_def(s, n, p)
@@ -37,18 +35,16 @@ b = lib.problem_def(s, n, p)
 # s.add(Extract(11, 11, b.F[n.index['L']]) == 0) #Ends 3.47% of words
 # s.add(Extract(11, 11, b.F[n.index['G']]) == 0) #Ends 2.94% of words
 # s.add(Extract(11, 11, b.F[n.index['A']]) == 0) #Ends 2.82% of words
-# s.add(Extract(11, 11, b.F[n.index['H']]) == 0) #Ends 2.71% of words
+# s.add(Extract(11, 11, b.F[n.ind ex['H']]) == 0) #Ends 2.71% of words
 
-# If E cannot use *M** can it achieve 2.6846? If not fix E here.
 # s.add(b.G[n.G_index[' ']] == 2)
 # s.add(b.G[n.G_index['E']] == 1024)
 # s.add(b.G[n.G_index['T']] == 16)
 # s.add(b.G[n.G_index['H']] == 128)
 
-
 # ******************************************************
 # ******************************************************
-# |   Problem: Minimize b.total_cost  |
+# |          Problem: Minimize b.total_cost            |
 # ******************************************************
 # ******************************************************
 
@@ -59,6 +55,7 @@ b = lib.problem_def(s, n, p)
 
 # Timeout is given in milliseconds
 s.set("timeout", (p.timeout.days * 24 * 60 * 60 + p.timeout.seconds) * 1000)
+s.set("auto_config", True)
 print(f"N-Grams: {str(len(n.G))}, Setup Time: {datetime.now() - setupTime}")
 print("---------------------------------------------------------------------------------------------")
 print(f"Cost Constraint         - Actual Cost             - Result  - Time:This Run  - Time:All Runs")
