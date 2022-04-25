@@ -15,18 +15,19 @@ class Parameters:
     #   resolution.
     # cost_hi: int = 20000000
     # cost_lo: int = 0
-    cost_hi: int = 17227064385339908
-    # cost_lo: int =  5624260931670580
-    cost_lo: int =  5624260931670
-    cost_res: int = 10000
+    cost_hi: int = 17227064385339908 # Reachable upper bound for standare H
+    cost_lo: int =  5624260931670580 # Unreachable lower bound for standard H
+    # cost_hi: int =   92805032126939
+    cost_lo: int =  1
+    cost_res: int = 1
     # -Easy SAT and clearly UNSAT problems are solved quickly.
     # -The solver learns more from solving SAT problems.
     #   Therefore search begins at cost_hi and decreases each time by initial_hi_to_lo_ratio_step_up.
     #   Once the first UNSAT or UNKNOWN is encountered, after_failure_step_up_ratio is used instead.
     #   Set initial_hi_to_lo_ratio_step_up to zero to enter after_failure_step_up_ratio immediately.
-    initial_hi_to_lo_ratio_step_up: float = 1/10000
+    initial_hi_to_lo_ratio_step_up: float = 1/100000000
     #   After first failure increase guess more conservatively.
-    after_failure_step_up_ratio: float = 1/1000
+    after_failure_step_up_ratio: float = 1/100000000
     # The number of miliseconds the solver should spend on any single iteration.
     #   Higher is better and slower.
     timeout: timedelta = timedelta(hours=2)
@@ -42,11 +43,11 @@ class Parameters:
     # Program will stop after max_time has been exceeded. This includes time of all runs,
     #   but does not include setup time.
     #   Will even quit mid-solve if max_time has been exceeded, but timeout has not.
-    max_time: timedelta = timedelta(minutes=5)
+    max_time: timedelta = timedelta(hours=2)
     # Contains the strings that will have chords assigned to them.
-    G_file: str = "input/G_12.txt"
+    G_file: str = "input/G_32.txt"
     # Frequency files to load:
-    H_file: str = "input/H_12.txt"
+    H_file: str = "input/H_32.txt"
     # Striding is assumed to be faster than normal, this is the discount given to strides.
     #   https://github.com/lancegatlin/typemax/blob/master/basic_layout_design.md#stride
     stride: float = 0.5

@@ -136,7 +136,7 @@ def custom_chord_cost(finger_limit, reserved_finger, max_chords_per_finger_limit
                     else:
                         cgfc["else"][chord_int] = cost  # All chords not limited by max_chords_per_finger_limit
 
-    s = "Chord Costs"
+    s = "Chord Costs\n"
     cost_lines = 0
     forbidden_chords = "# Forbidden chord combinations\n"
     forbidden_chords = forbidden_chords + "s.add( And( "
@@ -181,7 +181,7 @@ reserved_finger = "pinky"
 finger_limit = 2
 # All unique finger combinations of size finger_limit are limited to only this many chords.
 #   The cheapest chords are selected.
-max_chords_per_finger_limit = 2
+max_chords_per_finger_limit = 6
 
 (chord_cost, forbidden_chords) = custom_chord_cost(finger_limit, reserved_finger, max_chords_per_finger_limit)
 print("---------------------------------------------------------------------------")

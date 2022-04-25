@@ -28,7 +28,7 @@ b = lib.problem_def(s, n, p)
 # **************************************************
 
 s.set("auto_config", True)
-print(f"N-Grams: {str(len(n.G))}, Setup Time: {datetime.now() - setupTime}")
+print(f"N-Grams: {str(len(n.G))}, Setup Time: {datetime.now() - setupTime}, Current Time: {datetime.now()}")
 print("---------------------------------------------------------------------------------------------")
 print(f"Cost Constraint         - Actual Cost             - Result  - Time:This Run  - Time:All Runs")
 
