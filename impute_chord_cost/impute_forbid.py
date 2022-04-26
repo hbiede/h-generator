@@ -181,7 +181,7 @@ reserved_finger = "pinky"
 finger_limit = 2
 # All unique finger combinations of size finger_limit are limited to only this many chords.
 #   The cheapest chords are selected.
-max_chords_per_finger_limit = 6
+max_chords_per_finger_limit = 2
 
 (chord_cost, forbidden_chords) = custom_chord_cost(finger_limit, reserved_finger, max_chords_per_finger_limit)
 print("---------------------------------------------------------------------------")
