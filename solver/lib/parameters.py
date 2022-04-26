@@ -13,11 +13,8 @@ class Parameters:
     #   it can find. It will quit once the difference between the lowest satisfiable (sat)
     #   solution and the highest unsatisfiable/timeout (unsat/unknown) is less than the
     #   resolution.
-    # cost_hi: int = 20000000
-    # cost_lo: int = 0
     cost_hi: int = 17227064385339908 # Reachable upper bound for standare H
-    cost_lo: int =  5624260931670580 # Unreachable lower bound for standard H
-    # cost_hi: int =   92805032126939
+    # cost_hi: int =   3000000000000000
     cost_lo: int =  1
     cost_res: int = 1
     # -Easy SAT and clearly UNSAT problems are solved quickly.
@@ -30,7 +27,7 @@ class Parameters:
     after_failure_step_up_ratio: float = 1/100000000
     # The number of miliseconds the solver should spend on any single iteration.
     #   Higher is better and slower.
-    timeout: timedelta = timedelta(hours=2)
+    timeout: timedelta = timedelta(hours=5)
     # After a solver query is SAT, UNSAT, or UNKNOWN only print update to screen
     #   if at least update_time has passed since last printed update.
     #   Prevents screen from being spammed with lots of SATs when problem is easy.
@@ -43,7 +40,7 @@ class Parameters:
     # Program will stop after max_time has been exceeded. This includes time of all runs,
     #   but does not include setup time.
     #   Will even quit mid-solve if max_time has been exceeded, but timeout has not.
-    max_time: timedelta = timedelta(hours=2)
+    max_time: timedelta = timedelta(hours=5)
     # Contains the strings that will have chords assigned to them.
     G_file: str = "input/G_32.txt"
     # Frequency files to load:
