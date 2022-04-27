@@ -178,10 +178,10 @@ def forbidden(finger_limit):
 # Left and right buttons on this finger will not be used and are reserved for numbers and symbols.
 reserved_finger = "pinky"
 # Forbid chords involving more than this many fingers.
-finger_limit = 2
+finger_limit = 3
 # All unique finger combinations of size finger_limit are limited to only this many chords.
 #   The cheapest chords are selected.
-max_chords_per_finger_limit = 3
+max_chords_per_finger_limit = 27
 
 (chord_cost, forbidden_chords) = custom_chord_cost(finger_limit, reserved_finger, max_chords_per_finger_limit)
 print("---------------------------------------------------------------------------")
