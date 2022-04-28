@@ -13,9 +13,9 @@ class Parameters:
     #   it can find. It will quit once the difference between the lowest satisfiable (sat)
     #   solution and the highest unsatisfiable/timeout (unsat/unknown) is less than the
     #   resolution.
-    cost_hi: int = 17227064385339908 # Reachable upper bound for standard H
+    # cost_hi: int = 17227064385339908 # Reachable upper bound for standard H
     # cost_hi: int =   10000000000000000 # Upper bound for G_24
-    # cost_hi: int =   3000000000000000 # Upper bound for G_16 and G_12
+    cost_hi: int =   3000000000000000 # Upper bound for G_16 and G_12
     cost_lo: int =  1
     cost_res: int = 1
     # -Easy SAT and clearly UNSAT problems are solved quickly.
@@ -43,9 +43,9 @@ class Parameters:
     #   Will even quit mid-solve if max_time has been exceeded, but timeout has not.
     max_time: timedelta = timedelta(hours=5)
     # Contains the strings that will have chords assigned to them.
-    G_file: str = "input/G_127.txt"
+    G_file: str = "input/G_16.txt"
     # Frequency files to load:
-    H_file: str = "input/H_127.txt"
+    H_file: str = "input/H_16.txt"
     # Striding is assumed to be faster than normal, this is the discount given to strides.
     #   https://github.com/lancegatlin/typemax/blob/master/basic_layout_design.md#stride
     stride: float = 0.5
