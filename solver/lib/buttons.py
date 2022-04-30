@@ -101,9 +101,9 @@ def custom_hardcode(G, s, n): # Setup for G_16 with abstraction
     s.add(G[n.G_index['A']] == 2048)
     s.add(G[n.G_index['S']] == 64)
     s.add(G[n.G_index['Y']] == 256)
-    s.add(G[n.G_index['W']] == 1024 + 128)
+    s.add(G[n.G_index['W']] == 1152)
     s.add(G[n.G_index['R']] == 128)
-    s.add(G[n.G_index['OF']] == 512 + 64)
+    s.add(G[n.G_index['OF']] == 576)
     s.add(G[n.G_index['C']] == 8)
     s.add(G[n.G_index['N']] == 32)
 
