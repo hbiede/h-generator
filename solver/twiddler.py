@@ -2,12 +2,12 @@ from z3 import *
 from datetime import datetime, timedelta
 import lib
 
-# Twiddler BitVector Index
-#   L   M   R
-#   11  10  9 - Index
-#   8   7   6 - Middle
-#   5   4   3 - Ring
-#   2   1   0 - Pinky
+# Twiddler BitVector Index and Number
+#   L   M   R             L     M     R
+#   11  10  9 - Index  - 2048  1024  512
+#   8   7   6 - Middle - 256   128   64
+#   5   4   3 - Ring   - 32    16    8
+#   2   1   0 - Pinky  - 4     2     1
 
 setupTime = datetime.now()
 s = Solver()
