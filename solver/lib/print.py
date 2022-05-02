@@ -53,6 +53,7 @@ def print_details(s, m, b, n, this_run_time, all_run_time):
     num_5 = 0
     press_lookup = {}
     if m == None:
+        print("UNSAT - No SAT model.")
         print(s.unsat_core())
         return
     # print(m) # Uncomment to debug.
