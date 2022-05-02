@@ -147,9 +147,11 @@ def custom_chord_cost(finger_limit, reserved_finger, max_chords_per_finger_limit
                 s = s + f"s.add( Or( Not( G[i] == {chord_int}), raw_G_cost[i] == {cost}))\n"
                 cost_lines += 1
         else:
+            print(f"Finger: {finger_id}")
             chord_and_cost.sort(key=lambda y: y[1]) # Sort by 2nd element (cost) in tuple
             take_this_many_chords = min(len(chord_and_cost), max_chords_per_finger_limit)
             for i in range(take_this_many_chords):
+                print(chord_and_cost[i][0])
                 s = s + f"s.add( Or( Not( G[i] == {chord_and_cost[i][0]}), raw_G_cost[i] == {chord_and_cost[i][1]}))\n"
                 cost_lines += 1
             for i in range(take_this_many_chords, len(chord_and_cost)):
@@ -178,10 +180,10 @@ def forbidden(finger_limit):
 # Left and right buttons on this finger will not be used and are reserved for numbers and symbols.
 reserved_finger = "pinky"
 # Forbid chords involving more than this many fingers.
-finger_limit = 3
+finger_limit = 2
 # All unique finger combinations of size finger_limit are limited to only this many chords.
 #   The cheapest chords are selected.
-max_chords_per_finger_limit = 27
+max_chords_per_finger_limit = 2
 
 (chord_cost, forbidden_chords) = custom_chord_cost(finger_limit, reserved_finger, max_chords_per_finger_limit)
 print("---------------------------------------------------------------------------")
