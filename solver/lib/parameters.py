@@ -43,9 +43,9 @@ class Parameters:
     #   Will even quit mid-solve if max_time has been exceeded, but timeout has not.
     max_time: timedelta = timedelta(hours=5)
     # Contains the strings that will have chords assigned to them.
-    G_file: str = "input/G_64.txt"
+    G_file: str = "input/G_96.txt"
     # Frequency files to load:
-    H_file: str = "input/H_64.txt"
+    H_file: str = "input/H_96.txt"
     # Striding is assumed to be faster than normal, this is the discount given to strides.
     #   https://github.com/lancegatlin/typemax/blob/master/basic_layout_design.md#stride
     stride: float = 0.5
