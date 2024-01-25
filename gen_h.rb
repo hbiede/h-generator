@@ -31,9 +31,8 @@ class ArgParser
   # @param value [String] the value to check
   # @return [Boolean] true iff the value is an integer represented as a string
   def self.valid_integer(value)
-    value.gsub(
-      /[_,]/, ''
-    ).to_i.to_s == value.gsub(/[_,]/, '')
+    reduced = value.gsub(/[_,]/, '')
+    reduced.to_i.to_s == reduced
   end
 
   # Prints the help message text, formatted with default values
